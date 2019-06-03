@@ -28,11 +28,11 @@ When you're done with using BiSCoT, simply type `deactivate` to exit the virtual
 ## Usage
 
 BiSCoT was designed to improve a prior Bionano scaffolding so it needs a few files generated during this step :
-- one CMAP file of the reference genome (argument --cmap-ref) describing the positions of enzymatic labelling sites on the anchor (filename usually looks like this `*.cut_CTTAAG_GCTCTTC_0kb_0labels_NGS_contigs_HYBRID_Export_r.cmap` in the case of a double hybrid scaffolding)
-- one or two CMAP files of the contigs fasta file (arguments --cmap-dle and --cmap-bspq1) describing the positions of enzymatic labelling sites on the contigs (filenames usually look like this : `E_CTTAAG_Q_NGScontigs_A_HYBRID_q.cmap` for DLE1 and `E_GCTCTTC_Q_NGScontigs_A_HYBRID_q.cmap` for BspQI. If you don't find these two files in the directory you exported from the Bionano Access, see the section 'Finding contigs CMAP files' of this README)
-- one KEY file (argument --key) describing the names of the contig maps related to their FASTA file header names (filename usually looks like this `*.cut_CTTAAG_GCTCTTC_0kb_0labels_key.txt`)
-- one XMAP file (argument --xmap) describing the alignments of contig labels on the anchor (filename usually looks like this `*.cut_CTTAAG_GCTCTTC_0kb_0labels_NGS_contigs_HYBRID_Export.xmap_sorted.xmap`)
-- the contigs FASTA file (argument --contigs) that was used for the scaffolding
+- one CMAP file of the reference genome (--cmap-ref argument) describing the positions of enzymatic labelling sites on the anchor (filename usually looks like this `*.cut_CTTAAG_GCTCTTC_0kb_0labels_NGS_contigs_HYBRID_Export_r.cmap` in the case of a double hybrid scaffolding)
+- one or two CMAP files of the contigs fasta file (--cmap-dle and --cmap-bspq1 arguments) describing the positions of enzymatic labelling sites on the contigs (filenames usually look like this : `E_CTTAAG_Q_NGScontigs_A_HYBRID_q.cmap` for DLE1 and `E_GCTCTTC_Q_NGScontigs_A_HYBRID_q.cmap` for BspQI. If you don't find these two files in the directory you exported from the Bionano Access, see the section 'Finding contigs CMAP files' of this README)
+- one KEY file (--key argument) describing the names of the contig maps related to their FASTA file header names (filename usually looks like this `*.cut_CTTAAG_GCTCTTC_0kb_0labels_key.txt`)
+- one XMAP file (--xmap argument) describing the alignments of contig labels on the anchor (filename usually looks like this `*.cut_CTTAAG_GCTCTTC_0kb_0labels_NGS_contigs_HYBRID_Export.xmap_sorted.xmap`)
+- the contigs FASTA file (--contigs argument) that was used for the scaffolding
 
 Final command line should look like this :
 ```
