@@ -297,7 +297,7 @@ def main() :
 
     for anchor in aln_to_remove :
         for pos in aln_to_remove[anchor] :
-            logging.debug("Removing alignment of map %s" % anchor_dict[anchor][pos].map_id)
+            logging.debug("Removing alignment of map %s" % anchor_dict[anchor].alignments[pos].map_id)
             anchor_dict[anchor].pop(pos)
 
 
