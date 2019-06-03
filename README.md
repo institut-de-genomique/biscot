@@ -53,5 +53,5 @@ deactivate
 
 If everything went fine, a `biscot` directory should have been created. Inside, you will find a `scaffolds.fasta` containing the new scaffolds and a `scaffolds.agp` file containing the changes made to contigs. If you would like to change the name/path of the output directory, you can do so with the `--output` argument.
 
-Note : the name of the parameters are --cmap-dle and --cmap-bspq1 but it doesn't actually matter which enzymes were used, these names were chosen because they were the two most popular ones at the time of writing.
+Note : the name of the parameters are `--cmap-dle` and `--cmap-bspq1` but it doesn't actually matter which enzymes were used, these names were chosen because they were the two most popular ones at the time of writing.
     
