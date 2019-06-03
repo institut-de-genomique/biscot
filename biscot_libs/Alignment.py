@@ -89,6 +89,28 @@ class Alignment :
         return set(self.label_mappings.keys())
 
 
+    def get_anchor_labels_in_interval(self, anchor_label_start, anchor_label_end) :
+        """
+        Returns all anchor labels that were aligned to a map and that are between two set labels
+
+        Parameters :
+            anchor_label_start : int
+                Lower bound of anchor label numbers
+            anchor_label_end : int
+                Upper bound of anchor label numbers
+ 
+        Retuns :
+            labels_in_interval :
+                List of mapped anchor labels between the upper bound and lower bound
+        """
+
+        labels_in_interval = []
+        for label in self.label_mappings :
+            if label_start < label < label_end :
+                labels_in_interval.append(label)
+        return labels_in_interval
+
+
     def get_corresponding_contig_map_label(self, anchor_label) :
         """
         Returns the first map label that was aligned against an anchor label
