@@ -213,10 +213,9 @@ def main() :
 
                     # Map 1 is contained in map 2
                     if aln_1.anchor_end -  maps_to_contigs[aln_1.map_id].size > aln_2.anchor_start and aln_1.anchor_start + maps_to_contigs[aln_1.map_id].size < aln_2.anchor_end :
-                        logging.debug("Map %s contained in map %s" % (aln_1.map_id, aln_2.map_id))
-                        aln_to_remove[anchor].append(i - len(aln_to_remove[anchor]))
-                        logging.debug("%s %s" % (i, len(aln_to_remove[anchor]))
-                        continue
+                        #logging.debug("Map %s contained in map %s" % (aln_1.map_id, aln_2.map_id))
+                        aln_to_remove[anchor].append(i)
+                        continue 
 
                         aln_copy = Alignment.Alignment(aln_2.line)
                         if aln_copy.orientation == "+" :
@@ -256,9 +255,8 @@ def main() :
 
                     # Map 2 is contained in map 1
                     elif aln_2.anchor_end - maps_to_contigs[aln_2.map_id].size > aln_1.anchor_start and aln_2.anchor_start + maps_to_contigs[aln_2.map_id].size < aln_1.anchor_end :
-                        logging.debug("Map %s contained in map %s" % (aln_2.map_id, aln_1.map_id))
-                        aln_to_remove[anchor].append(j - len(aln_to_remove[anchor]))
-                        logging.debug("%s %s" % (i, len(aln_to_remove[anchor]))
+                        #logging.debug("Map %s contained in map %s" % (aln_2.map_id, aln_1.map_id))
+                        aln_to_remove[anchor].append(j)
                         continue
 
                         aln_copy = Alignment.Alignment(aln_1.line)
@@ -299,8 +297,8 @@ def main() :
 
     for anchor in aln_to_remove :
         for pos in aln_to_remove[anchor] :
-            logging.debug("Removing alignment of map %s" % anchor_dict[anchor].alignments[pos].map_id)
-            anchor_dict[anchor].alignments.pop(pos)
+            logging.debug("Removing alignment of map %s on anchor %s" % (anchor_dict[anchor].alignments[pos].map_id, anchor))
+        anchor_dict[anchor].alignments = [i for j, i in enumerate(anchor_dict[anchor].alignments) if j not in aln_to_remove[anchor]]
 
 
     logging.info("Sorting alignments")
