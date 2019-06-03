@@ -40,7 +40,7 @@ Final command line should look like this :
 source BISCOT_DIR/venv/bin/activate
 
 # Execute BiSCoT
-biscot.py --cmap-ref cmap_refeference.cmap \\
+biscot.py --cmap-ref cmap_reference.cmap \\
     --cmap-bspq1 cmap_bspq1.cmap \\
     --cmap-dle cmap_dle.cmap
     --xmap xmap.xmap
