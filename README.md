@@ -1,5 +1,5 @@
 # Bionano SCaffolding Correction Tool (BiSCoT)
-BiSCoT is a tool that aims to improve the contiguity of scaffolds and contigs generated after a Bionano scaffolding. In order to do that, it looks for enzymatic labelling sites on contigs and merges them if they share labels.
+BiSCoT is a tool that aims to improve the contiguity of scaffolds and contigs generated after a Bionano scaffolding by looking for enzymatic labelling sites on contigs. If two distinct contigs share labels, it merges them at the last shared site.
 
 Biorxiv preprint : [XXX](https://www.biorxiv.org/ "BiSCoT Biorxiv preprint")
 
