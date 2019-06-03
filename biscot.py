@@ -4,10 +4,6 @@ from biscot_libs import Alignment
 from biscot_libs import Anchor
 from biscot_libs import Map
 from biscot_libs import Misc
-#import Alignment
-#import Anchor
-#import Map
-#import Misc
 
 from Bio.Seq import Seq
 from Bio import SeqIO
