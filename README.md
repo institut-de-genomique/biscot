@@ -36,14 +36,21 @@ BiSCoT was designed to improve a prior Bionano scaffolding so it needs a few fil
 
 Final command line should look like this :
 ```
+# Activate the virtualenv, replace BISCOT_DIR with the path to your BiSCoT installation
 source BISCOT_DIR/venv/bin/activate
+
+# Execute BiSCoT
 biscot.py --cmap-ref cmap_refeference.cmap \\
     --cmap-bspq1 cmap_bspq1.cmap \\
     --cmap-dle cmap_dle.cmap
     --xmap xmap.xmap
     --key key.txt
     --contigs contigs.fasta
+    
+# Exit the virtualenv
 deactivate
 ```
+
+If everything went fine, a `biscot` directory should have been created. Inside, you will find a `scaffolds.fasta` containing the new scaffolds and a `scaffolds.agp` file containing the changes made to contigs. If you would like to change the name/path of the output directory, you can do so with the `--output` argument.
 
     
