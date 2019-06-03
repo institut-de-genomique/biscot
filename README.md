@@ -39,6 +39,12 @@ Final command line should look like this :
 # Activate the virtualenv, replace BISCOT_DIR with the path to your BiSCoT installation
 source BISCOT_DIR/venv/bin/activate
 
+# Make sure that BLAT is in your PATH
+which blat
+
+# Otherwise, modify your PATH to include the blat directory
+export PATH=Path/To/Blat:$PATH
+
 # Execute BiSCoT
 biscot.py --cmap-ref cmap_reference.cmap \\
     --cmap-bspq1 cmap_bspq1.cmap \\
