@@ -215,6 +215,7 @@ def main() :
                     if aln_1.anchor_end -  maps_to_contigs[aln_1.map_id].size > aln_2.anchor_start and aln_1.anchor_start + maps_to_contigs[aln_1.map_id].size < aln_2.anchor_end :
                         logging.debug("Map %s contained in map %s" % (aln_1.map_id, aln_2.map_id))
                         aln_to_remove[anchor].append(i - len(aln_to_remove[anchor]))
+                        logging.debug("%s %s" % (i, len(aln_to_remove[anchor]))
                         continue
 
                         aln_copy = Alignment.Alignment(aln_2.line)
@@ -257,6 +258,7 @@ def main() :
                     elif aln_2.anchor_end - maps_to_contigs[aln_2.map_id].size > aln_1.anchor_start and aln_2.anchor_start + maps_to_contigs[aln_2.map_id].size < aln_1.anchor_end :
                         logging.debug("Map %s contained in map %s" % (aln_2.map_id, aln_1.map_id))
                         aln_to_remove[anchor].append(j - len(aln_to_remove[anchor]))
+                        logging.debug("%s %s" % (i, len(aln_to_remove[anchor]))
                         continue
 
                         aln_copy = Alignment.Alignment(aln_1.line)
