@@ -17,20 +17,20 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-     name='biscot',  
-     version='1.0',
-     scripts=['biscot.py'] ,
-     author="Benjamin Istace, Caroline Belser, Jean-Marc Aury",
-     author_email="bistace@genoscope.cns.fr",
-     description="Bionano SCaffolding Correction Tool",
-     long_description=long_description,
-     long_description_content_type="text/markdown",
-     url="https://github.com/institut-de-genomique/biscot",
-     packages=["biscot_libs"],
-     install_requires=parse_requirements('requirements.txt'),
-     classifiers=[
-         "Programming Language :: Python :: 3",
-         "License :: CeCILL",
-         "Operating System :: Linux",
-     ]
+    name='biscot',  
+    version='1.0',
+    scripts=['biscot.py'] ,
+    author="Benjamin Istace, Caroline Belser, Jean-Marc Aury",
+    author_email="bistace@genoscope.cns.fr",
+    description="Bionano SCaffolding Correction Tool",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/institut-de-genomique/biscot",
+    packages=["biscot_libs"],
+    install_requires=parse_requirements('requirements.txt'),
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: CeCILL",
+        "Operating System :: Linux",
+    ]
 )
