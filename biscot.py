@@ -70,19 +70,19 @@ def main() :
     optional_args.add_argument("--prefix", "-p",
         action="store", 
         dest="prefix", 
-        help="Prefix of the output agp and fasta files to be created",
+        help="Prefix of the output agp and fasta files to be created (default : %(default)s)",
         default="scaffolds",
         required=False)
     optional_args.add_argument("--output", "-o",
         action="store", 
         dest="output_directory", 
-        help="Name of the output directory",
+        help="Name of the output directory (default : %(default)s)",
         default="biscot",
         required=False)
     optional_args.add_argument("--debug", 
         action="store_true", 
         dest="debug", 
-        help="Activates debug level logs",
+        help="Activates debug level logs (default : %(default)s)",
         default=False,
         required=False)
     optional_args.add_argument("--help", "-h", 
