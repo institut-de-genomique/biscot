@@ -35,18 +35,12 @@ def main() :
         help="Path to the reference CMAP file (example : '...NGS_contigs_HYBRID_Export_r.cmap')",
         default="",
         required=True)
-    mandatory_args.add_argument("--cmap-dle",
+    mandatory_args.add_argument("--cmap-1",
         action="store", 
-        dest="cmap_dle_path", 
-        help="Path to the DLE query CMAP file (example : 'E_CTTAAG_Q_NGScontigs_A_HYBRID_q.cmap')",
+        dest="cmap_1_path", 
+        help="Path to a query CMAP file (example : 'E_CTTAAG_Q_NGScontigs_A_HYBRID_q.cmap')",
         default="",
         required=True)
-    mandatory_args.add_argument("--cmap-bspq1",
-        action="store", 
-        dest="cmap_bspq1_path", 
-        help="Path to the BspQI query cmap (example : 'E_GCTCTTC_Q_NGScontigs_A_HYBRID_q.cmap')",
-        default=None,
-        required=False)
     mandatory_args.add_argument("--xmap",
         action="store", 
         dest="xmap_path", 
@@ -65,6 +59,14 @@ def main() :
         help="Path to the contigs file that was scaffolded by the Bionano Access",
         default="",
         required=True)
+
+    secondary_map_args = parser.add_argument_group("Secondary map argument")
+    secondary_map_args.add_argument("--cmap-2",
+        action="store", 
+        dest="cmap_2_path", 
+        help="Path to a query cmap (example : 'E_GCTCTTC_Q_NGScontigs_A_HYBRID_q.cmap')",
+        default=None,
+        required=False)
 
     optional_args = parser.add_argument_group("Optional arguments")
     optional_args.add_argument("--prefix", "-p",
@@ -91,8 +93,8 @@ def main() :
 
     args = parser.parse_args()
     args.cmap_ref_path = os.path.abspath(args.cmap_ref_path)
-    args.cmap_dle_path = os.path.abspath(args.cmap_dle_path)
-    if args.cmap_bspq1_path : args.cmap_bspq1_path = os.path.abspath(args.cmap_bspq1_path)
+    args.cmap_1_path = os.path.abspath(args.cmap_1_path)
+    if args.cmap_2_path : args.cmap_2_path = os.path.abspath(args.cmap_2_path)
     args.xmap_path = os.path.abspath(args.xmap_path)
     args.contigs_path = os.path.abspath(args.contigs_path)
     args.key_path = os.path.abspath(args.key_path)
@@ -138,15 +140,15 @@ def main() :
     
 
     logging.info("Retrieving contig maps labels")
-    cmap = open(args.cmap_dle_path)
+    cmap = open(args.cmap_1_path)
     for line in cmap :
         if not line.startswith("#") :
             line = line.strip().split("\t")
             maps_to_contigs[int(line[0])].add_label(line, 1)
     cmap.close()
 
-    if args.cmap_bspq1_path :
-        cmap = open(args.cmap_bspq1_path)
+    if args.cmap_2_path :
+        cmap = open(args.cmap_2_path)
         for line in cmap :
             if not line.startswith("#") :
                 line = line.strip().split("\t")
