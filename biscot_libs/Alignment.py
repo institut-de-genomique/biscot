@@ -89,15 +89,17 @@ class Alignment :
         return set(self.label_mappings.keys())
 
 
-    def get_anchor_labels_in_interval(self, anchor_label_start, anchor_label_end) :
+    def get_anchor_labels_in_interval(self, start, end, anchor) :
         """
-        Returns all anchor labels that were aligned to a map and that are between two set labels
+        Returns all anchor labels that were aligned to a map and that are between two positions
 
         Parameters :
-            anchor_label_start : int
-                Lower bound of anchor label numbers
-            anchor_label_end : int
-                Upper bound of anchor label numbers
+            start : int
+                Lower bound of positions
+            end : int
+                Upper bound of positions
+            anchor : Anchor
+                Anchor in which to search labels
  
         Retuns :
             labels_in_interval :
@@ -106,8 +108,17 @@ class Alignment :
 
         labels_in_interval = []
         for label in self.label_mappings :
-            if label_start < label < label_end :
-                labels_in_interval.append(label)
+            try :
+                if start < anchor.labels_DLE[label] < end :
+                    labels_in_interval.append(label)
+            except :
+                try :
+                    if start < anchor.labels_BspQI[label] < end :
+                        labels_in_interval.append(label)  
+                except :
+                    pass
+                pass
+              
         return labels_in_interval
 
 
@@ -196,8 +207,8 @@ class Alignment :
                 Anchor implied in the alignment
 
         Returns
-            labels : tuple(int, int)
-                First and last labels that have been removed
+            labels : tuple(tuple(int, int), tuple(int, int))
+                First and last labels that have been removed and the corresponding labels on map
         """
 
         labels_to_remove = []
@@ -211,20 +222,26 @@ class Alignment :
                     if nb_labels_to_keep > 0 :
                         nb_labels_to_keep -= 1
                     else :
-                        labels_to_remove.append(anchor_label)
+                        labels_to_remove.append((anchor_label, self.label_mappings[anchor_label][0]))
             except :
                 if anchor.labels_BspQI[anchor_label] > self.anchor_end or anchor.labels_BspQI[anchor_label] < self.anchor_start :
                     if nb_labels_to_keep > 0 :
                         nb_labels_to_keep -= 1
                     else :
-                        labels_to_remove.append(anchor_label)
+                        labels_to_remove.append((anchor_label, self.label_mappings[anchor_label][0]))
 
         for label in labels_to_remove :
-            del self.label_mappings[label]
+            del self.label_mappings[label[0]]
 
-        logging.debug("Removed labels from %s to %s in alignment of map %s on anchor %s" % (labels_to_remove[0], labels_to_remove[-1], self.map_id, self.anchor_id))
+        try :
+            logging.debug("Removed labels from %s to %s in alignment of map %s on anchor %s" % (labels_to_remove[0], labels_to_remove[-1], self.map_id, self.anchor_id))
+        except :
+            logging.debug("Removed 0 label, no mappings at this position ?")
 
-        return (labels_to_remove[0], labels_to_remove[-1])
+        try :
+            return (labels_to_remove[0], labels_to_remove[-1])
+        except :
+            return (None, None)
 
 
     def __str__(self) :

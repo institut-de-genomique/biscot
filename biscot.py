@@ -189,6 +189,22 @@ def main() :
                 anchor_dict[aln.anchor_id].add_alignment(aln)    
 
 
+    logging.info("Removing badly mapped contig maps")
+    aln_to_remove = defaultdict(list)
+    for anchor in anchor_dict :
+        for i, aln in enumerate(anchor_dict[anchor]) :
+            map_id = aln.map_id
+            number_mapped_anchor_labels = len(aln.label_mappings)
+            number_total_labels_map = len(maps_to_contigs[map_id].labels)
+            if number_mapped_anchor_labels / number_total_labels_map < 0.4 :
+                logging.debug("Anchor %s : Map %s is badly mapped (%.2f %% labels mapping)" % (anchor, map_id, number_mapped_anchor_labels / number_total_labels_map * 100))
+                aln_to_remove[anchor].append(i)
+
+    for anchor in aln_to_remove :
+        for pos in aln_to_remove[anchor] :
+            logging.debug("Removing alignment of map %s on anchor %s" % (anchor_dict[anchor].alignments[pos].map_id, anchor))
+        anchor_dict[anchor].alignments = [i for j, i in enumerate(anchor_dict[anchor].alignments) if j not in aln_to_remove[anchor]]
+
     logging.info("Looking for maps contained into others")
     new_map_id = max(maps_to_contigs.keys()) + 1
     aln_to_remove = defaultdict(list)
@@ -212,29 +228,46 @@ def main() :
                     """
 
                     # Map 1 is contained in map 2
-                    if aln_1.anchor_end -  maps_to_contigs[aln_1.map_id].size > aln_2.anchor_start and aln_1.anchor_start + maps_to_contigs[aln_1.map_id].size < aln_2.anchor_end :
-                        #logging.debug("Map %s contained in map %s" % (aln_1.map_id, aln_2.map_id))
-                        aln_to_remove[anchor].append(i)
-                        continue 
+                    if aln_1.anchor_end - maps_to_contigs[aln_1.map_id].size > aln_2.anchor_start and aln_1.anchor_start + maps_to_contigs[aln_1.map_id].size < aln_2.anchor_end :
+                        logging.debug("Anchor %s : Map %s contained in map %s" % (anchor, aln_1.map_id, aln_2.map_id))
+
+                        # If map 1 mapped better than map 2, we conserve alignment
+                        # Otherwise, we delete it
+                        nb_labels_mapped_aln_1 = len(aln_1.get_anchor_labels_in_interval(aln_1.anchor_start, aln_1.anchor_end, anchor_dict[anchor]))
+                        nb_labels_mapped_aln_2 = len(aln_2.get_anchor_labels_in_interval(aln_1.anchor_start, aln_1.anchor_end, anchor_dict[anchor]))
+                        if nb_labels_mapped_aln_1 < nb_labels_mapped_aln_2 : 
+                            aln_to_remove[anchor].append(i)
+                            logging.debug("Anchor %s : Map %s is badly mapped, alignment will be removed" % (anchor, aln_1.map_id))
+                            continue 
+
+                        logging.debug("Anchor %s : Map %s mapped better than map %s, splitting alignment" % (anchor, aln_1.map_id, aln_2.map_id))
+
+                        # If maps don't share labels, we can't split the alignment
+                        intersection = Alignment.find_shared_labels(anchor_dict[anchor], aln_1.map_id, aln_2.map_id)
+                        if not intersection :
+                            logging.debug("No labels shared, can't split the alignment")
+                            continue
 
                         aln_copy = Alignment.Alignment(aln_2.line)
-                        if aln_copy.orientation == "+" :
+                        if aln_1.orientation == "+" :
                             aln_copy.set_anchor_start(aln_1.anchor_end + (maps_to_contigs[aln_1.map_id].size - aln_1.map_end))
                         else :
-                            aln_copy.set_anchor_start(aln_1.anchor_end + aln_1.map_start)
+                            aln_copy.set_anchor_start(aln_1.anchor_end + (maps_to_contigs[aln_1.map_id].size - aln_1.map_start))
 
                         removed_anchor_labels = aln_copy.update_mappings(anchor_dict[anchor])
-                        first_label = anchor_dict[anchor].find_label_on_contig_map(aln_2.map_id, removed_anchor_labels[0])
-                        last_label = anchor_dict[anchor].find_label_on_contig_map(aln_2.map_id, removed_anchor_labels[1])
+                        #first_label = anchor_dict[anchor].find_label_on_contig_map(aln_2.map_id, removed_anchor_labels[0])
+                        first_label = removed_anchor_labels[0][1]
+                        #last_label = anchor_dict[anchor].find_label_on_contig_map(aln_2.map_id, removed_anchor_labels[1])
+                        last_label = removed_anchor_labels[1][1]
 
                         if aln_2.orientation == "+" :
                             aln_copy.set_map_start(maps_to_contigs[aln_2.map_id].get_label_position_on_map(last_label))
                             anchor_dict[anchor].alignments[j].set_map_end(maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label))
-                            maps_to_contigs[aln_2.map_id].end = aln_copy.map_start - 1
+                            maps_to_contigs[aln_2.map_id].end = maps_to_contigs[aln_2.map_id].start + aln_copy.map_start - 1
                         elif aln_2.orientation == "-" :
                             aln_copy.set_map_start(maps_to_contigs[aln_2.map_id].get_label_position_on_map(last_label))
                             anchor_dict[anchor].alignments[j].set_map_end(maps_to_contigs[aln_2.map_id].get_label_position_on_map(first_label))
-                            maps_to_contigs[aln_2.map_id].end = aln_copy.map_end + 1
+                            maps_to_contigs[aln_2.map_id].end = maps_to_contigs[aln_2.map_id].start + aln_copy.map_end + 1
 
                         if aln_1.orientation == "+" :
                             anchor_dict[anchor].alignments[j].set_anchor_end(aln_1.anchor_start - aln_1.map_start)
@@ -243,7 +276,7 @@ def main() :
                         anchor_dict[anchor].alignments[j].update_mappings(anchor_dict[anchor])
 
                         new_map = Map.Map(new_map_id, maps_to_contigs[aln_copy.map_id].base_contig_name, maps_to_contigs[aln_copy.map_id].size)
-                        contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(min(aln_copy.map_start, aln_copy.map_end)) + ":" + str(max(aln_copy.map_end, aln_copy.map_start))
+                        contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_2.map_id].start + min(aln_copy.map_start, aln_copy.map_end)) + ":" + str(maps_to_contigs[aln_2.map_id].start + max(aln_copy.map_end, aln_copy.map_start))
                         new_map.update_map(contig_name, dict_sequences)
                         new_map.labels = maps_to_contigs[aln_copy.map_id].labels
                         maps_to_contigs[new_map_id] = new_map
@@ -255,28 +288,46 @@ def main() :
 
                     # Map 2 is contained in map 1
                     elif aln_2.anchor_end - maps_to_contigs[aln_2.map_id].size > aln_1.anchor_start and aln_2.anchor_start + maps_to_contigs[aln_2.map_id].size < aln_1.anchor_end :
-                        #logging.debug("Map %s contained in map %s" % (aln_2.map_id, aln_1.map_id))
-                        aln_to_remove[anchor].append(j)
-                        continue
+                        logging.debug("Anchor %s : Map %s contained in map %s" % (anchor, aln_2.map_id, aln_1.map_id))
+
+                        # If map 2 mapped better than map 1, we conserve alignment
+                        # Otherwise, we delete it
+                        nb_labels_mapped_aln_1 = len(aln_1.get_anchor_labels_in_interval(aln_2.anchor_start, aln_2.anchor_end, anchor_dict[anchor]))
+                        nb_labels_mapped_aln_2 = len(aln_2.get_anchor_labels_in_interval(aln_2.anchor_start, aln_2.anchor_end, anchor_dict[anchor]))
+                        if nb_labels_mapped_aln_2 < nb_labels_mapped_aln_1 :
+                            aln_to_remove[anchor].append(j)
+                            logging.debug("Anchor %s : Map %s is badly mapped, alignment will be removed" % (anchor, aln_2.map_id))
+                            continue
+
+                        logging.debug("Anchor %s : Map %s mapped better than map %s, splitting alignment" % (anchor, aln_2.map_id, aln_1.map_id))
+
+                        # If maps don't share labels, we can't split the alignment
+                        intersection = Alignment.find_shared_labels(anchor_dict[anchor], aln_1.map_id, aln_2.map_id)
+                        if not intersection :
+                            logging.debug("No labels shared, can't split the alignment")
+                            continue
+
 
                         aln_copy = Alignment.Alignment(aln_1.line)
-                        if aln_copy.orientation == "-" :
-                            aln_copy.set_anchor_start(aln_2.anchor_end + aln_2.map_start)
+                        if aln_2.orientation == "-" :
+                            aln_copy.set_anchor_start(aln_2.anchor_end + (maps_to_contigs[aln_2.map_id].size - aln_2.map_start))
                         else :
                             aln_copy.set_anchor_start(aln_2.anchor_end + (maps_to_contigs[aln_2.map_id].size - aln_2.map_end))
 
                         removed_anchor_labels = aln_copy.update_mappings(anchor_dict[anchor])
-                        first_label = anchor_dict[anchor].find_label_on_contig_map(aln_1.map_id, removed_anchor_labels[0])
-                        last_label = anchor_dict[anchor].find_label_on_contig_map(aln_1.map_id, removed_anchor_labels[1])
+                        #first_label = anchor_dict[anchor].find_label_on_contig_map(aln_1.map_id, removed_anchor_labels[0])
+                        first_label = removed_anchor_labels[0][1]
+                        #last_label = anchor_dict[anchor].find_label_on_contig_map(aln_1.map_id, removed_anchor_labels[1])
+                        last_label = removed_anchor_labels[1][1]
 
                         if aln_1.orientation == "+" :
                             aln_copy.set_map_start(maps_to_contigs[aln_1.map_id].get_label_position_on_map(last_label))
                             anchor_dict[anchor].alignments[i].set_map_end(maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label))
-                            maps_to_contigs[aln_1.map_id].end = aln_copy.map_start - 1
+                            maps_to_contigs[aln_1.map_id].end = maps_to_contigs[aln_1.map_id].start + aln_copy.map_start - 1
                         elif aln_1.orientation == "-" :
                             aln_copy.set_map_start(maps_to_contigs[aln_1.map_id].get_label_position_on_map(last_label))
                             anchor_dict[anchor].alignments[i].set_map_end(maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label))
-                            maps_to_contigs[aln_1.map_id].end = aln_copy.map_start + 1
+                            maps_to_contigs[aln_1.map_id].end = maps_to_contigs[aln_1.map_id].start + aln_copy.map_end + 1
 
                         if aln_1.orientation == "+" :
                             anchor_dict[anchor].alignments[i].set_anchor_end(aln_2.anchor_start - aln_2.map_start)
@@ -285,7 +336,7 @@ def main() :
                         anchor_dict[anchor].alignments[i].update_mappings(anchor_dict[anchor])
 
                         new_map = Map.Map(new_map_id, maps_to_contigs[aln_copy.map_id].base_contig_name, maps_to_contigs[aln_copy.map_id].size)
-                        contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(min(aln_copy.map_start, aln_copy.map_end)) + ":" + str(max(aln_copy.map_end, aln_copy.map_start))
+                        contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_1.map_id].start + min(aln_copy.map_start, aln_copy.map_end)) + ":" + str(maps_to_contigs[aln_1.map_id].start + max(aln_copy.map_end, aln_copy.map_start))
                         new_map.update_map(contig_name, dict_sequences)
                         new_map.labels = maps_to_contigs[aln_copy.map_id].labels
                         maps_to_contigs[new_map_id] = new_map
