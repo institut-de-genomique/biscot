@@ -51,8 +51,8 @@ export PATH=Path/To/Blat:$PATH
 
 # Execute BiSCoT
 biscot.py --cmap-ref cmap_reference.cmap \\
-    --cmap-bspq1 cmap_bspq1.cmap \\
-    --cmap-dle cmap_dle.cmap \\
+    --cmap-1 cmap_dle.cmap \\
+    --cmap-2 cmap_bspq1.cmap \\
     --xmap xmap.xmap \\
     --key key.txt \\
     --contigs contigs.fasta \\
@@ -66,6 +66,3 @@ If everything went fine, a `biscot` directory should have been created. Inside, 
 - a `scaffolds.fasta` containing the new scaffolds 
 - a `scaffolds.agp` file containing the changes made to contigs. 
 If you would like to change the name/path of the output directory, you can do so with the `--output` argument.
-
-Note : the name of the CMAP parameters are `--cmap-dle` and `--cmap-bspq1` but it doesn't actually matter which enzymes were used, these names were chosen because they were the two most popular ones at the time of writing.
-    
