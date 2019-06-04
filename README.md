@@ -52,10 +52,10 @@ export PATH=Path/To/Blat:$PATH
 # Execute BiSCoT
 biscot.py --cmap-ref cmap_reference.cmap \\
     --cmap-bspq1 cmap_bspq1.cmap \\
-    --cmap-dle cmap_dle.cmap
-    --xmap xmap.xmap
-    --key key.txt
-    --contigs contigs.fasta
+    --cmap-dle cmap_dle.cmap \\
+    --xmap xmap.xmap \\
+    --key key.txt \\
+    --contigs contigs.fasta \\
     --output biscot
     
 # Exit the virtualenv
