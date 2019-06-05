@@ -69,6 +69,12 @@ def main() :
         required=False)
 
     optional_args = parser.add_argument_group("Optional arguments")
+    optional_args.add_argument("--no-inclusion",
+        action="store_true", 
+        dest="no_inclusion", 
+        help="Disables the treatment of maps contained into other maps. Recommended if Bionano maps are a mixture of haplotypes (default : %(default)s)",
+        default=False,
+        required=False)
     optional_args.add_argument("--prefix", "-p",
         action="store", 
         dest="prefix", 
@@ -191,21 +197,21 @@ def main() :
                 anchor_dict[aln.anchor_id].add_alignment(aln)    
 
 
-    logging.info("Removing badly mapped contig maps")
-    aln_to_remove = defaultdict(list)
-    for anchor in anchor_dict :
-        for i, aln in enumerate(anchor_dict[anchor]) :
-            map_id = aln.map_id
-            number_mapped_anchor_labels = len(aln.label_mappings)
-            number_total_labels_map = len(maps_to_contigs[map_id].labels)
-            if number_mapped_anchor_labels / number_total_labels_map < 0.4 :
-                logging.debug("Anchor %s : Map %s is badly mapped (%.2f %% labels mapping)" % (anchor, map_id, number_mapped_anchor_labels / number_total_labels_map * 100))
-                aln_to_remove[anchor].append(i)
+    #logging.info("Removing badly mapped contig maps")
+    #aln_to_remove = defaultdict(list)
+    #for anchor in anchor_dict :
+    #    for i, aln in enumerate(anchor_dict[anchor]) :
+    #        map_id = aln.map_id
+    #        number_mapped_anchor_labels = len(aln.label_mappings)
+    #        number_total_labels_map = len(maps_to_contigs[map_id].labels)
+    #        if number_mapped_anchor_labels / number_total_labels_map < 0.4 :
+    #            logging.debug("Anchor %s : Map %s is badly mapped (%.2f %% labels mapping)" % (anchor, map_id, number_mapped_anchor_labels / number_total_labels_map * 100))
+    #            aln_to_remove[anchor].append(i)
 
-    for anchor in aln_to_remove :
-        for pos in aln_to_remove[anchor] :
-            logging.debug("Removing alignment of map %s on anchor %s" % (anchor_dict[anchor].alignments[pos].map_id, anchor))
-        anchor_dict[anchor].alignments = [i for j, i in enumerate(anchor_dict[anchor].alignments) if j not in aln_to_remove[anchor]]
+    #for anchor in aln_to_remove :
+    #    for pos in aln_to_remove[anchor] :
+    #        logging.debug("Removing alignment of map %s on anchor %s" % (anchor_dict[anchor].alignments[pos].map_id, anchor))
+    #    anchor_dict[anchor].alignments = [i for j, i in enumerate(anchor_dict[anchor].alignments) if j not in aln_to_remove[anchor]]
 
     logging.info("Looking for maps contained into others")
     new_map_id = max(maps_to_contigs.keys()) + 1
@@ -232,6 +238,10 @@ def main() :
                     # Map 1 is contained in map 2
                     if aln_1.anchor_end - maps_to_contigs[aln_1.map_id].size > aln_2.anchor_start and aln_1.anchor_start + maps_to_contigs[aln_1.map_id].size < aln_2.anchor_end :
                         logging.debug("Anchor %s : Map %s contained in map %s" % (anchor, aln_1.map_id, aln_2.map_id))
+
+                        if args.no_inclusion and i not in aln_to_remove[anchor]:
+                            aln_to_remove[anchor].append(i)
+                            continue
 
                         # If map 1 mapped better than map 2, we conserve alignment
                         # Otherwise, we delete it
@@ -291,6 +301,10 @@ def main() :
                     # Map 2 is contained in map 1
                     elif aln_2.anchor_end - maps_to_contigs[aln_2.map_id].size > aln_1.anchor_start and aln_2.anchor_start + maps_to_contigs[aln_2.map_id].size < aln_1.anchor_end :
                         logging.debug("Anchor %s : Map %s contained in map %s" % (anchor, aln_2.map_id, aln_1.map_id))
+
+                        if args.no_inclusion and j not in aln_to_remove[anchor] :
+                            aln_to_remove[anchor].append(j)
+                            continue
 
                         # If map 2 mapped better than map 1, we conserve alignment
                         # Otherwise, we delete it
@@ -674,6 +688,8 @@ def main() :
             with open("seq_2.tmp", "w") as seq_2 :
                 seq_2.write(">%s_%s\n%s" % (scaffold_name, end, dict_sequences[scaffold_name][end : end + 30000]))
 
+            #print(max(0, start - 30000), start)
+            #print(end, end + 30000)
             Misc.launch_blat()
             ref_size, aln_ref_end, aln_query_end = Alignment.parse_blat(scaffold_name, start)
 
