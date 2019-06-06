@@ -38,7 +38,7 @@ BiSCoT was designed to improve a prior Bionano scaffolding so it needs a few fil
 - a XMAP file (--xmap argument) describing the alignments of contig labels on the anchor (filename usually looks like this `*.cut_CTTAAG_GCTCTTC_0kb_0labels_NGS_contigs_HYBRID_Export.xmap_sorted.xmap`)
 - the contigs FASTA file (--contigs argument) that was used for the scaffolding
 
-Final command line should look like this :
+A typical execution of BiSCoT should look like this :
 ```
 # Activate the virtualenv, replace BISCOT_DIR with the path to your BiSCoT installation
 source BISCOT_DIR/venv/bin/activate
