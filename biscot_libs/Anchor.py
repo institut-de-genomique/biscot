@@ -70,13 +70,15 @@ class Anchor :
             self.maps.append(aln.map_id)
 
 
-    def get_alignment_positions(self, contig_map_id) :
+    def get_alignment_positions(self, contig_map_id, skip) :
         """
         Returns informations about the alignment between a map and an anchor
 
         Parameters :
             contig_map_id : int
                 Unique identifier of a map 
+            skip : int
+                Number of alignments to skip for a map (A map can be aligned multiple times)
 
         Returns :
             tuple(int, int, str, int, int) 
@@ -87,9 +89,13 @@ class Anchor :
                 End of the alignment on map
         """
 
+        counter = 0
         for aln in self.alignments :
             if aln.map_id == contig_map_id :
-                return (aln.anchor_start, aln.anchor_end, aln.orientation, aln.map_start, aln.map_end)
+                if counter >= skip :
+                     return (aln.anchor_start, aln.anchor_end, aln.orientation, aln.map_start, aln.map_end)
+                else :
+                     counter += 1
 
 
     def add_DLE_label(self, cmap_splitted_line) :

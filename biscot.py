@@ -378,6 +378,7 @@ def main() :
     agp = open(args.prefix + ".agp", "w")
     fasta = open(args.prefix + ".fasta", "w")
     scaffolds_N_positions = defaultdict(list)
+    map_occurrences = defaultdict(int)
     for anchor_number, anchor in enumerate(sorted(anchor_dict.keys())) :
         previous_contig_maps = {}
 
@@ -431,8 +432,13 @@ def main() :
                     logging.debug("MAP 1 : Searched label %s on map %s (%s labels)" % (label_1, contig_map_1, len(maps_to_contigs[contig_map_1].labels)))
                     logging.debug("MAP 2 : Searched label %s on map %s (%s labels)" % (label_2, contig_map_2, len(maps_to_contigs[contig_map_2].labels)))
 
-            contig_map_1_mapping_pos = anchor_dict[anchor].get_alignment_positions(contig_map_1)
-            contig_map_2_mapping_pos = anchor_dict[anchor].get_alignment_positions(contig_map_2)
+            if i >= len(anchor_maps) - 1 :
+                 contig_map_1_mapping_pos = anchor_dict[anchor].get_alignment_positions(contig_map_1, map_occurrences[contig_map_1])
+                 contig_map_2_mapping_pos = anchor_dict[anchor].get_alignment_positions(contig_map_2, map_occurrences[contig_map_2] - 1)
+            else :
+                 contig_map_1_mapping_pos = anchor_dict[anchor].get_alignment_positions(contig_map_1, map_occurrences[contig_map_1])
+                 map_occurrences[contig_map_1] += 1
+                 contig_map_2_mapping_pos = anchor_dict[anchor].get_alignment_positions(contig_map_2, map_occurrences[contig_map_2])
 
             # If the two maps are not overlapping, they can't share labels
             if Alignment.get_overlap_size(contig_map_1_mapping_pos, contig_map_2_mapping_pos) == 0 and intersection :
@@ -527,16 +533,6 @@ def main() :
                             previous_contig_maps[contig_map_2] = 1
                         else :
                             previous_contig_maps[contig_map_2] = maps_to_contigs[contig_map_1].end
-
-                    # if contig_map_1 == 85 :
-                    #     print(contig_map_1)
-                    #     print(contig_map_1_mapping_pos)
-                    #     print(contig_map_2)
-                    #     print(contig_map_2_mapping_pos)
-                    #     print(intersection)
-                    #     print(contig_map_1_last_shared_label)
-                    #     print(contig_1_last_shared_label_position)
-                    #     exit()
                     
                     agp_scaffold_end = agp_scaffold_start + agp_contig_end - agp_contig_start
 
@@ -617,6 +613,16 @@ def main() :
 
                     number_of_N_to_add = space_between_contig_maps_labels - contig_map_1_length_delta - contig_map_2_length_delta
 
+
+                    if contig_map_1 == 4159 :
+                        print(contig_map_1)
+                        print(contig_map_1_mapping_pos)
+                        print(contig_map_2)
+                        print(contig_map_2_mapping_pos)
+                        print(intersection)
+                        print(contig_map_1_last_shared_label)
+                        print(contig_1_last_shared_label_position)
+                        print(number_of_N_to_add)
 
                     if number_of_N_to_add < 0 :
                         number_of_N_to_add = 13
