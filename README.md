@@ -65,4 +65,5 @@ deactivate
 If everything went fine, a `biscot` directory should have been created. Inside, you will find two output files :
 - a `scaffolds.fasta` containing the new scaffolds 
 - a `scaffolds.agp` file containing the changes made to contigs. 
+
 If you would like to change the name/path of the output directory, you can do so with the `--output` argument.
