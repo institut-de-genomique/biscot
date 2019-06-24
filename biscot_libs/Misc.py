@@ -62,8 +62,8 @@ def launch_blat() :
     blat_cmd = "blat seq_1.tmp seq_2.tmp blat_output.tmp -minScore=3000"
     popen = subprocess.Popen(blat_cmd, shell = True, stdin = None, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
     out, err = popen.communicate()
-    if err :
-        logging.debug(err)
+    #if err :
+    #    logging.debug(err)
 
 
 def mute_agp_file(agp_file_path, changes_file_path, prefix) :
