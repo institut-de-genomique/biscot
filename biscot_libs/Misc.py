@@ -106,7 +106,11 @@ def mute_agp_file(agp_file_path, changes_file_path, prefix) :
                 for change in changes_dict[scaffold] :
                     if change[0] == line[1] :
                         # Change start of next line on scaffold
-                        agp_dict[scaffold][i+1][1] = str(int(agp_dict[scaffold][i+1][1]) + int(change[2]))
+                        try :
+                            agp_dict[scaffold][i+1][1] = str(int(agp_dict[scaffold][i+1][1]) + int(change[2]))
+                        except :
+                            logging.info(change)
+                            exit()
 
                         # Change start of next line on contig
                         agp_dict[scaffold][i+1][6] = str(int(agp_dict[scaffold][i+1][6]) + int(change[2]))
