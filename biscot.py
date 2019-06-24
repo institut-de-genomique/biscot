@@ -594,9 +594,17 @@ def main() :
 
                 if i < len(anchor_maps) - 1 : 
                     space_between_contig_maps_labels = contig_map_2_mapping_pos[0] - contig_map_1_mapping_pos[1]
+                    contig_map_1_length_delta = 0
                     
                     if contig_map_1_mapping_pos[2] == "+" and contig_map_2_mapping_pos[2] == "+" :
-                        contig_map_1_length_delta = maps_to_contigs[contig_map_1].size - contig_map_1_mapping_pos[4]
+                        try :
+                            contig_map_1_length_delta = maps_to_contigs[contig_map_1].size - contig_map_1_mapping_pos[4]
+                        except :
+                            logging.info(contig_map_1_mapping_pos)
+                            logging.info(maps_to_contigs[contig_map_1])
+                            logging.info(contig_map_2_mapping_pos)
+                            logging.info(maps_to_contigs[contig_map_2])
+                            exit(-1)
                         contig_map_2_length_delta = contig_map_2_mapping_pos[3]
 
                     elif contig_map_1_mapping_pos[2] == "+" and contig_map_2_mapping_pos[2] == "-" :
