@@ -267,14 +267,12 @@ def main() :
                             aln_copy.set_anchor_start(aln_1.anchor_end + (maps_to_contigs[aln_1.map_id].size - aln_1.map_start))
 
                         removed_anchor_labels = aln_copy.update_mappings(anchor_dict[anchor])
-                        #first_label = anchor_dict[anchor].find_label_on_contig_map(aln_2.map_id, removed_anchor_labels[0])
                         first_label = removed_anchor_labels[0][1]
-                        #last_label = anchor_dict[anchor].find_label_on_contig_map(aln_2.map_id, removed_anchor_labels[1])
                         last_label = removed_anchor_labels[1][1]
 
                         if aln_2.orientation == "+" :
                             aln_copy.set_map_start(maps_to_contigs[aln_2.map_id].get_label_position_on_map(last_label))
-                            anchor_dict[anchor].alignments[j].set_map_end(maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label))
+                            anchor_dict[anchor].alignments[j].set_map_end(maps_to_contigs[aln_2.map_id].get_label_position_on_map(first_label))
                             maps_to_contigs[aln_2.map_id].end = maps_to_contigs[aln_2.map_id].start + aln_copy.map_start - 1
                         elif aln_2.orientation == "-" :
                             aln_copy.set_map_start(maps_to_contigs[aln_2.map_id].get_label_position_on_map(last_label))
@@ -331,9 +329,7 @@ def main() :
                             aln_copy.set_anchor_start(aln_2.anchor_end + (maps_to_contigs[aln_2.map_id].size - aln_2.map_end))
 
                         removed_anchor_labels = aln_copy.update_mappings(anchor_dict[anchor])
-                        #first_label = anchor_dict[anchor].find_label_on_contig_map(aln_1.map_id, removed_anchor_labels[0])
                         first_label = removed_anchor_labels[0][1]
-                        #last_label = anchor_dict[anchor].find_label_on_contig_map(aln_1.map_id, removed_anchor_labels[1])
                         last_label = removed_anchor_labels[1][1]
 
                         if aln_1.orientation == "+" :
