@@ -104,22 +104,12 @@ def mute_agp_file(agp_file_path, changes_file_path, prefix) :
             if scaffold in changes_dict :
                 change_found = False
                 for change in changes_dict[scaffold] :
-                    if change[0] == line[1] :
+                    if change[0] == line[1] and agp_dict[scaffold][i+1][6] != "scaffold" :
                         # Change start of next line on scaffold
-                        try :
-                            agp_dict[scaffold][i+1][1] = str(int(agp_dict[scaffold][i+1][1]) + int(change[2]))
-                        except :
-                            logging.info(change)
-                            logging.info(agp_dict[scaffold][i+1])
-                            exit()
+                        agp_dict[scaffold][i+1][1] = str(int(agp_dict[scaffold][i+1][1]) + int(change[2]))
 
                         # Change start of next line on contig
-                        try :
-                            agp_dict[scaffold][i+1][6] = str(int(agp_dict[scaffold][i+1][6]) + int(change[2]))
-                        except:
-                            logging.info(change)
-                            logging.info(agp_dict[scaffold][i+1])
-                            exit()
+                        agp_dict[scaffold][i+1][6] = str(int(agp_dict[scaffold][i+1][6]) + int(change[2]))
 
                         # Change end of previous line on scaffold
                         new_agp_lines[-1][2] = str(int(agp_dict[scaffold][i-1][2]) - (int(change[3]) - int(change[1])))
