@@ -593,14 +593,7 @@ def main() :
                     contig_map_1_length_delta = 0
                     
                     if contig_map_1_mapping_pos[2] == "+" and contig_map_2_mapping_pos[2] == "+" :
-                        try :
-                            contig_map_1_length_delta = maps_to_contigs[contig_map_1].size - contig_map_1_mapping_pos[4]
-                        except :
-                            logging.info(contig_map_1_mapping_pos)
-                            logging.info(maps_to_contigs[contig_map_1])
-                            logging.info(contig_map_2_mapping_pos)
-                            logging.info(maps_to_contigs[contig_map_2])
-                            exit(-1)
+                        contig_map_1_length_delta = maps_to_contigs[contig_map_1].size - contig_map_1_mapping_pos[4]
                         contig_map_2_length_delta = contig_map_2_mapping_pos[3]
 
                     elif contig_map_1_mapping_pos[2] == "+" and contig_map_2_mapping_pos[2] == "-" :
@@ -616,17 +609,6 @@ def main() :
                         contig_map_2_length_delta = maps_to_contigs[contig_map_2].size - contig_map_2_mapping_pos[3]
 
                     number_of_N_to_add = space_between_contig_maps_labels - contig_map_1_length_delta - contig_map_2_length_delta
-
-
-                    if contig_map_1 == 4159 :
-                        print(contig_map_1)
-                        print(contig_map_1_mapping_pos)
-                        print(contig_map_2)
-                        print(contig_map_2_mapping_pos)
-                        print(intersection)
-                        print(contig_map_1_last_shared_label)
-                        print(contig_1_last_shared_label_position)
-                        print(number_of_N_to_add)
 
                     if number_of_N_to_add < 0 :
                         number_of_N_to_add = 13
