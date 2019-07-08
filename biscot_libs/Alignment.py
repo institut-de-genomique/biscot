@@ -133,8 +133,7 @@ class Alignment :
                 except :
                     pass
                 pass
-        if labels_in_interval == [] :
-            print(self.map_id, start, end)
+
         return labels_in_interval
 
 
