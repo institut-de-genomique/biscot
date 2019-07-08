@@ -581,6 +581,12 @@ def main() :
 
             # The map doesn't share any label with the next one
             if not intersection :
+                if contig_map_1 == 135 :
+                    print(contig_map_1)
+                    print(contig_map_1_mapping_pos)
+                    print(contig_map_2)
+                    print(contig_map_2_mapping_pos)
+
                 if contig_map_1 not in previous_contig_maps :
                     agp_contig_start = maps_to_contigs[contig_map_1].start
                     agp_contig_end = maps_to_contigs[contig_map_1].end
@@ -620,20 +626,23 @@ def main() :
                     contig_map_1_length_delta = 0
                     
                     if contig_map_1_mapping_pos[2] == "+" and contig_map_2_mapping_pos[2] == "+" :
-                        contig_map_1_length_delta = maps_to_contigs[contig_map_1].size - contig_map_1_mapping_pos[4]
+                        contig_map_1_length_delta = 13
                         contig_map_2_length_delta = contig_map_2_mapping_pos[3]
 
                     elif contig_map_1_mapping_pos[2] == "+" and contig_map_2_mapping_pos[2] == "-" :
-                        contig_map_1_length_delta = maps_to_contigs[contig_map_1].size - contig_map_1_mapping_pos[4]
-                        contig_map_2_length_delta = maps_to_contigs[contig_map_2].size - contig_map_2_mapping_pos[3]
+                        contig_map_1_length_delta = 13
+                        contig_map_2_length_delta = 13
+                        if contig_map_1 == 135 :
+                            print(contig_map_1_length_delta)
+                            print(contig_map_2_length_delta)
 
                     elif contig_map_1_mapping_pos[2] == "-" and contig_map_2_mapping_pos[2] == "+" :
-                        contig_map_1_length_delta = contig_map_1_mapping_pos[4]
+                        contig_map_1_length_delta = contig_map_1_mapping_pos[3]
                         contig_map_2_length_delta = contig_map_2_mapping_pos[3]
 
                     elif contig_map_1_mapping_pos[2] == "-" and contig_map_2_mapping_pos[2] == "-" :
-                        contig_map_1_length_delta = contig_map_1_mapping_pos[4]
-                        contig_map_2_length_delta = maps_to_contigs[contig_map_2].size - contig_map_2_mapping_pos[3]
+                        contig_map_1_length_delta = contig_map_1_mapping_pos[3]
+                        contig_map_2_length_delta = 13
 
                     number_of_N_to_add = space_between_contig_maps_labels - contig_map_1_length_delta - contig_map_2_length_delta
 
