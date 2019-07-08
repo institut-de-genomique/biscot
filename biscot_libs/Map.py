@@ -66,14 +66,16 @@ class Map :
         # If the contig was splitted by the Bionano Access, we need to recompute coordinates
         if "subseq" in contig_name :
             contig_name_split = contig_name.split("_subseq_")
-            self.start = int(contig_name_split[1].split(":")[0]) - 1
-            self.end = int(contig_name_split[1].split(":")[1])
+            self.start = min(int(contig_name_split[1].split(":")[0]), int(contig_name_split[1].split(":")[1])) - 1
+            self.end = max(int(contig_name_split[1].split(":")[0]), int(contig_name_split[1].split(":")[1]))
             self.base_contig_name = contig_name_split[0]
+            self.contig_name = contig_name
 
         else :
             self.start = 0
             self.end = len(dict_sequences[self.contig_name])
             self.base_contig_name = contig_name
+            self.contig_name = contig_name
 
 
     def add_label(self, cmap_splitted_line, channel) :
@@ -88,6 +90,21 @@ class Map :
         label_id, label_position, label_channel = int(cmap_splitted_line[3]), int(cmap_splitted_line[5].split(".")[0]), int(cmap_splitted_line[4])
         if label_channel != 0 :
             self.labels.append((label_id, label_position, channel))
+
+
+    def update_labels(self, difference) :
+        """
+        Removes labels that have a position > self.end or < self.start
+
+        Parameters :
+            difference : int
+                Number to subtract from the position
+        """
+
+        tmp_labels = []
+        for label_id, position, channel in self.labels :
+            tmp_labels.append((label_id, position - difference, channel))
+        self.labels = tmp_labels
 
 
     def get_label_position_on_map(self, label) :
@@ -133,7 +150,6 @@ class Map :
                 if nb_label == label :
                     positions.append(self.start + lab[1])
                     break
-                    #return self.start + lab[1]
                 nb_label += 1
 
         nb_label = 1
@@ -142,7 +158,6 @@ class Map :
                 if nb_label == label :
                     positions.append(self.start + lab[1])
                     break
-                    #return self.start + lab[1]
                 nb_label += 1
 
         # In some cases, the label is not indicated in the CMAP
@@ -154,5 +169,5 @@ class Map :
 
 
     def __str__(self) :
-        txt = "%s\t%s\t%s\t%s" % (self.map_id, self.contig_name, self.start, self.end)
+        txt = "%s\t%s\t%s\t%s\t%s" % (self.map_id, self.contig_name, self.base_contig_name, self.start, self.end)
         return txt

@@ -1,4 +1,5 @@
 from biscot_libs import Anchor
+import copy
 import logging
 
 class Alignment :
@@ -54,27 +55,41 @@ class Alignment :
             xmap_line : str
                 One line of a xmap file 
         """
+        
+        if xmap_line == "" :
+            self.map_id = ""
+            self.map_start = ""
+            self.map_end = ""
+            self.anchor_id = ""
+            self.anchor_start = ""
+            self.anchor_end = ""
+            self.orientation = ""
+            self.label_channel = ""
+            self.label_mappings = ""
 
-        self.line = xmap_line
-        xmap_line = xmap_line.strip().split("\t")
+        else :
+            xmap_line = xmap_line.strip().split("\t")
 
-        self.map_id, self.map_start, self.map_end = int(xmap_line[1]), int(xmap_line[3].split(".")[0]), int(xmap_line[4].split(".")[0])
-        self.anchor_id, self.anchor_start, self.anchor_end = int(xmap_line[2]), int(xmap_line[5].split(".")[0]), int(xmap_line[6].split(".")[0])
-        self.orientation = xmap_line[7]
-        self.label_channel = xmap_line[12]
+            self.map_id, self.map_start, self.map_end = int(xmap_line[1]), int(xmap_line[3].split(".")[0]), int(xmap_line[4].split(".")[0])
+            self.anchor_id, self.anchor_start, self.anchor_end = int(xmap_line[2]), int(xmap_line[5].split(".")[0]), int(xmap_line[6].split(".")[0])
+            self.orientation = xmap_line[7]
+            self.label_channel = xmap_line[12]
 
-        # Base format : "(anchor_label_1,map_label_1)(anchor_label_2, map_label_2)..."
-        # New format  : ["anchor_label_1,map_label_1", "anchor_label_2,map_label_2"]
-        label_mappings = xmap_line[13].replace("(", "").replace(")", " ").split(" ")
+            if self.anchor_start > self.anchor_end :
+                self.anchor_start, self.anchor_end = self.anchor_end, self.anchor_start
 
-        self.label_mappings = {}
-        for mapping in label_mappings :
-            if mapping :
-                anchor_label, map_label = mapping.split(",")
-                try :
-                    self.label_mappings[int(anchor_label)].append(int(map_label))
-                except :
-                    self.label_mappings[int(anchor_label)] = [int(map_label)]
+            # Base format : "(anchor_label_1,map_label_1)(anchor_label_2, map_label_2)..."
+            # New format  : ["anchor_label_1,map_label_1", "anchor_label_2,map_label_2"]
+            label_mappings = xmap_line[13].replace("(", "").replace(")", " ").split(" ")
+
+            self.label_mappings = {}
+            for mapping in label_mappings :
+                if mapping :
+                    anchor_label, map_label = mapping.split(",")
+                    try :
+                        self.label_mappings[int(anchor_label)].append(int(map_label))
+                    except :
+                        self.label_mappings[int(anchor_label)] = [int(map_label)]
 
 
     def get_anchor_labels(self) :
@@ -118,7 +133,8 @@ class Alignment :
                 except :
                     pass
                 pass
-              
+        if labels_in_interval == [] :
+            print(self.map_id, start, end)
         return labels_in_interval
 
 
@@ -136,6 +152,49 @@ class Alignment :
         """
 
         return self.label_mappings[anchor_label][0]
+
+
+    def is_contained(self, map_1, aln_2, map_2) :
+        """
+        Verifies if map_1 is contained into map_2
+
+        Parameters :
+            map_1 : Map
+            aln_2 : Alignment
+                Alignment object of the second map
+            map_2 : Map
+
+        Returns :
+            bool
+                True if contained, False otherwise
+        """
+
+        aln_1 = self
+        start_containment = aln_1.anchor_start >= aln_2.anchor_start
+        end_containment = aln_1.anchor_end <= aln_2.anchor_end
+
+        if map_2.map_id == 3697 and map_1.map_id == 81:
+            print(map_1.map_id, map_2.map_id)
+            print(start_containment)
+            print(end_containment)
+
+#        if aln_1.orientation == "+" and aln_2.orientation == "+" :
+#            start_containment = aln_1.anchor_start - aln_1.map_start > aln_2.anchor_start - aln_2.map_start
+#            end_containment = aln_1.anchor_end + (map_1.size - aln_1.map_end) < aln_2.anchor_end + (map_2.size - aln_2.map_end)
+#
+#        elif aln_1.orientation == "-" and aln_2.orientation == "-" :
+#            start_containment = aln_1.anchor_start - aln_1.map_end > aln_2.anchor_start - aln_2.map_end
+#            end_containment = aln_1.anchor_end + (map_1.size - aln_1.map_start) < aln_2.anchor_end + (map_2.size - aln_2.map_start)
+#
+#        elif aln_1.orientation == "+" and aln_2.orientation == "-" :
+#            start_containment = aln_1.anchor_start - aln_1.map_start > aln_2.anchor_start - aln_2.map_end
+#            end_containment = aln_1.anchor_end + (map_1.size - aln_1.map_end) < aln_2.anchor_end + (map_2.size - aln_2.map_start)
+#
+#        elif aln_1.orientation == "-" and aln_2.orientation == "+" :
+#            start_containment = aln_1.anchor_start - aln_1.map_end > aln_2.anchor_start - aln_2.map_start
+#            end_containment = aln_1.anchor_end + (map_1.size - aln_1.map_start) < aln_2.anchor_end + (map_2.size - aln_2.map_end)
+
+        return(start_containment and end_containment)
 
 
     def set_anchor_start(self, start) :
@@ -236,7 +295,7 @@ class Alignment :
         try :
             logging.debug("Removed labels from %s to %s in alignment of map %s on anchor %s" % (labels_to_remove[0], labels_to_remove[-1], self.map_id, self.anchor_id))
         except :
-            logging.debug("Removed 0 label, no mappings at this position ?")
+            logging.debug("Removed 0 label, no mappings at this position?")
 
         try :
             return (labels_to_remove[0], labels_to_remove[-1])
@@ -247,6 +306,30 @@ class Alignment :
     def __str__(self) :
         txt = "%s\t%s\t%s\t%s\t%s\t%s\t%s" % (self.anchor_id, self.anchor_start, self.anchor_end, self.map_id, self.map_start, self.map_end, self.orientation)
         return txt
+
+
+def copy_alignment(aln_2) :
+    """
+    Copy all paramters from a map alignment into a new Alignment object
+
+    Parameters :
+        aln_2 : Alignment
+            Alignment object to copy parameters from
+    """
+
+    tmp = Alignment("")
+
+    tmp.map_id = aln_2.map_id
+    tmp.map_start = aln_2.map_start
+    tmp.map_end = aln_2.map_end
+    tmp.anchor_id = aln_2.anchor_id
+    tmp.anchor_start = aln_2.anchor_start
+    tmp.anchor_end = aln_2.anchor_end
+    tmp.orientation = aln_2.orientation
+    tmp.label_channel = aln_2.label_channel
+    tmp.label_mappings = copy.deepcopy(aln_2.label_mappings)
+
+    return(tmp)
 
 
 def find_shared_labels(anchor, map_id_1, map_id_2) :
@@ -270,9 +353,13 @@ def find_shared_labels(anchor, map_id_1, map_id_2) :
     for aln in anchor :
         mapping_dict[aln.map_id] = aln.get_anchor_labels()
 
-    intersection = mapping_dict[map_id_1].intersection(mapping_dict[map_id_2])
-    intersection = sorted(intersection)
-    return intersection
+    try :
+        intersection = mapping_dict[map_id_1].intersection(mapping_dict[map_id_2])
+        intersection = sorted(intersection)
+        return intersection
+    except :
+        print(anchor.anchor_id, map_id_1, map_id_2)
+        exit()
 
 
 def get_overlap_size(mapping_pos_1, mapping_pos_2) :
