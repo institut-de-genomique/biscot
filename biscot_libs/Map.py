@@ -169,5 +169,5 @@ class Map :
 
 
     def __str__(self) :
-        txt = "%s\t%s\t%s\t%s\t%s" % (self.map_id, self.contig_name, self.base_contig_name, self.start, self.end)
+        txt = "%s\t%s\t%s\t%s\t%s\t%s" % (self.map_id, self.contig_name, self.base_contig_name, self.start, self.end, self.size)
         return txt

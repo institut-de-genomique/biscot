@@ -251,7 +251,7 @@ def main() :
                                 anchor_dict[anchor].maps = [k for k in anchor_dict[anchor].maps if k != aln_1.map_id]
                                 continue
 
-                            if anchor == 100020 :
+                            if anchor == 20 :
                                 print("-------1")
                                 print(maps_to_contigs[aln_1.map_id])
                                 print(aln_1)
@@ -285,30 +285,46 @@ def main() :
                             last_label_copy = removed_anchor_labels_copy[1][1]
                             first_label_aln_2 = aln_2.get_corresponding_contig_map_label(intersection[0])
 
-                            if anchor == 100020:
+                            if anchor == 20:
                                 print(intersection)
                                 print(aln_copy)
 
                             if aln_2.orientation == "+" :
                                 aln_copy.set_map_start(maps_to_contigs[aln_2.map_id].get_label_position_on_map(last_label_copy))
                                 anchor_dict[anchor].alignments[j].set_map_end(maps_to_contigs[aln_2.map_id].get_label_position_on_map(first_label_aln_2))
-                                maps_to_contigs[aln_2.map_id].end = maps_to_contigs[aln_2.map_id].start + aln_copy.map_start - 1
+                                # maps_to_contigs[aln_2.map_id].end = maps_to_contigs[aln_2.map_id].start + aln_copy.map_start - 1
                             elif aln_2.orientation == "-" :
                                 aln_copy.set_map_start(maps_to_contigs[aln_2.map_id].get_label_position_on_map(last_label_copy))
                                 anchor_dict[anchor].alignments[j].set_map_end(maps_to_contigs[aln_2.map_id].get_label_position_on_map(first_label_aln_2))
-                                maps_to_contigs[aln_2.map_id].end = maps_to_contigs[aln_2.map_id].start + aln_copy.map_end + 1
+                                # maps_to_contigs[aln_2.map_id].end = maps_to_contigs[aln_2.map_id].start + aln_copy.map_end + 1
 
-                            if anchor == 100020:
-                                print(intersection)
+                            if anchor == 20:
                                 print(aln_copy)
 
                             anchor_dict[anchor].alignments[j].set_anchor_end(aln_1.anchor_start + 100)
                             anchor_dict[anchor].alignments[j].update_mappings(anchor_dict[anchor])
 
+                            if anchor == 20 :
+                                print("#####")
+                                print(aln_2)
+                                print(aln_1)
+                                print(aln_copy)  
+                                print(maps_to_contigs[aln_2.map_id])
+                                print(maps_to_contigs[aln_1.map_id])
+                                print(maps_to_contigs[aln_copy.map_id])
+                                print("#####")
+
                             new_map = Map.Map(new_map_id, maps_to_contigs[aln_copy.map_id].base_contig_name, maps_to_contigs[aln_copy.map_id].size)
-                            contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_2.map_id].start + min(aln_copy.map_start, aln_copy.map_end)) + ":" + str(maps_to_contigs[aln_2.map_id].start + max(aln_copy.map_end, aln_copy.map_start))
+                            if aln_2.orientation == "+" :
+                                maps_to_contigs[aln_2.map_id].end = maps_to_contigs[aln_2.map_id].start + maps_to_contigs[aln_2.map_id].get_label_position_on_map(first_label_aln_2)
+                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_2.map_id].end + 1) + ":" + str(maps_to_contigs[aln_2.map_id].size)
+                            else :
+                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_2.map_id].start + 1) + ":" + str(aln_copy.map_start)
+                                maps_to_contigs[aln_2.map_id].start = maps_to_contigs[aln_2.map_id].get_label_position_on_map(first_label_aln_2)                           
+                            # contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_2.map_id].start + min(aln_copy.map_start, aln_copy.map_end)) + ":" + str(maps_to_contigs[aln_2.map_id].start + max(aln_copy.map_end, aln_copy.map_start))
                             new_map.update_map(contig_name, dict_sequences)
-                            new_map.size = max(new_map.start, new_map.end) - min(new_map.start, new_map.end)
+                            # Conserves the size of the original size
+                            new_map.size = copy.deepcopy(maps_to_contigs[aln_2.map_id].size)
                             new_map.labels = copy.deepcopy(maps_to_contigs[aln_2.map_id].labels)
                             if aln_copy.orientation == "+" :
                                 new_map.update_labels(aln_copy.map_start)
@@ -316,12 +332,14 @@ def main() :
                                 aln_copy.map_start = 1
                             maps_to_contigs[new_map_id] = new_map
                             aln_copy.set_map_id(new_map_id)
+
+                            maps_to_contigs[aln_2.map_id].size = maps_to_contigs[aln_2.map_id].end - maps_to_contigs[aln_2.map_id].start
                             
                             if aln_2.orientation == "-" :
                                 maps_to_contigs[aln_2.map_id].update_labels(aln_2.map_end)
                             new_map_id += 1
 
-                            if anchor == 100020 :
+                            if anchor == 20 :
                                 print(aln_2)
                                 print(aln_1)
                                 print(aln_copy)  
@@ -344,7 +362,7 @@ def main() :
                                 anchor_dict[anchor].maps = [k for k in anchor_dict[anchor].maps if k != aln_2.map_id]
                                 continue
 
-                            if anchor == 100020 :
+                            if anchor == 20 :
                                 print("-------2")
                                 print(maps_to_contigs[aln_2.map_id])
                                 print(aln_2)
@@ -379,7 +397,7 @@ def main() :
                             last_label_copy = removed_anchor_labels_copy[1][1]
                             first_label_aln_1 = aln_1.get_corresponding_contig_map_label(intersection[0])
 
-                            if anchor == 100020:
+                            if anchor == 20:
                                 print(intersection)
                                 print(aln_copy)
 
@@ -387,24 +405,35 @@ def main() :
                                 aln_copy.set_map_start(maps_to_contigs[aln_1.map_id].get_label_position_on_map(last_label_copy))
                                 anchor_dict[anchor].alignments[i].set_map_end(maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label_aln_1))
                                 #maps_to_contigs[aln_1.map_id].end = maps_to_contigs[aln_1.map_id].start + aln_copy.map_start - 1
-                                maps_to_contigs[aln_1.map_id].end = maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label_aln_1)
                             elif aln_1.orientation == "-" :
                                 aln_copy.set_map_start(maps_to_contigs[aln_1.map_id].get_label_position_on_map(last_label_copy))
                                 anchor_dict[anchor].alignments[i].set_map_end(maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label_aln_1))
                                 #maps_to_contigs[aln_1.map_id].end = maps_to_contigs[aln_1.map_id].start + aln_copy.map_end + 1
-                                maps_to_contigs[aln_1.map_id].start = maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label_aln_1)
 
                             anchor_dict[anchor].alignments[i].set_anchor_end(aln_2.anchor_start + 100)
                             anchor_dict[anchor].alignments[i].update_mappings(anchor_dict[anchor])   
 
+                            if anchor == 20 :
+                                print("#####")
+                                print(aln_1)
+                                print(aln_2)
+                                print(aln_copy)  
+                                print(maps_to_contigs[aln_1.map_id])
+                                print(maps_to_contigs[aln_2.map_id])
+                                print(maps_to_contigs[aln_copy.map_id])
+                                print("#####")
+
                             new_map = Map.Map(new_map_id, maps_to_contigs[aln_copy.map_id].base_contig_name, maps_to_contigs[aln_copy.map_id].size)
                             if aln_1.orientation == "+" :
-                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(aln_copy.map_start) + ":" + str(aln_copy.map_end)
+                                maps_to_contigs[aln_1.map_id].end = maps_to_contigs[aln_1.map_id].start + maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label_aln_1)
+                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_1.map_id].end + 1) + ":" + str(maps_to_contigs[aln_1.map_id].size)
                             else :
-                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(aln_copy.map_end) +  ":" + str(aln_copy.map_start)
+                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_1.map_id].start + 1) + ":" + str(aln_copy.map_start)
+                                maps_to_contigs[aln_1.map_id].start = maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label_aln_1)
                             #contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_1.map_id].start + min(aln_copy.map_start, aln_copy.map_end)) + ":" + str(maps_to_contigs[aln_1.map_id].start + max(aln_copy.map_end, aln_copy.map_start))
                             new_map.update_map(contig_name, dict_sequences)
-                            new_map.size = max(new_map.start, new_map.end) - min(new_map.start, new_map.end)
+                            # Conserves the size of the original map
+                            new_map.size = copy.deepcopy(maps_to_contigs[aln_1.map_id].size)
                             new_map.labels = copy.deepcopy(maps_to_contigs[aln_1.map_id].labels)
                             if aln_copy.orientation == "+" :
                                 new_map.update_labels(aln_copy.map_start)
@@ -413,10 +442,12 @@ def main() :
                             maps_to_contigs[new_map_id] = new_map
                             aln_copy.set_map_id(new_map_id)
 
+                            maps_to_contigs[aln_1.map_id].size = maps_to_contigs[aln_1.map_id].end - maps_to_contigs[aln_1.map_id].start
+
                             if aln_1.orientation == "-" :
                                 maps_to_contigs[aln_1.map_id].update_labels(aln_1.map_end)
 
-                            if anchor == 100020 :
+                            if anchor == 20 :
                                 print(aln_1)
                                 print(aln_2)
                                 print(aln_copy)  
@@ -444,7 +475,7 @@ def main() :
     for anchor in anchor_dict :
         anchor_dict[anchor].sort_alignments()
 
-    for aln in anchor_dict[100020] :
+    for aln in anchor_dict[20] :
         print(aln)
         print(maps_to_contigs[aln.map_id])
 
@@ -521,7 +552,7 @@ def main() :
                 intersection = set()
                 logging.debug("Removed intersection from maps %s and %s on anchor %s" % (contig_map_1, contig_map_2, anchor))
 
-            if contig_map_1 == 41 :
+            if contig_map_1 == 3616 :
                 print(contig_map_1)
                 print(maps_to_contigs[contig_map_1])
                 print(contig_map_1_mapping_pos)
@@ -536,7 +567,7 @@ def main() :
                 contig_map_1_last_shared_label = anchor_dict[anchor].find_label_on_contig_map(contig_map_1, intersection[-1])
                 contig_map_2_last_shared_label = anchor_dict[anchor].find_label_on_contig_map(contig_map_2, intersection[-1])
 
-                if contig_map_1 == 41 :
+                if contig_map_1 == 3616 :
                     print(contig_map_1_last_shared_label)
                     print(contig_map_2_last_shared_label)
 
@@ -589,7 +620,7 @@ def main() :
 #                    except :
 #                        pass
 
-                if contig_map_1 == 41 :
+                if contig_map_1 == 3616 :
                     print(contig_1_last_shared_label_position)
                     print(contig_2_last_shared_label_position)
 
@@ -622,7 +653,7 @@ def main() :
                                 agp_contig_end = previous_contig_maps[contig_map_1]
                         previous_contig_maps[contig_map_2] = contig_2_last_shared_label_position
 
-                    if contig_map_1 == 41 :
+                    if contig_map_1 == 3616 :
                         print(previous_contig_maps[contig_map_2])
 
                     if not previous_contig_maps[contig_map_2] :
