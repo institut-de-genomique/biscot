@@ -353,13 +353,9 @@ def find_shared_labels(anchor, map_id_1, map_id_2) :
     for aln in anchor :
         mapping_dict[aln.map_id] = aln.get_anchor_labels()
 
-    try :
-        intersection = mapping_dict[map_id_1].intersection(mapping_dict[map_id_2])
-        intersection = sorted(intersection)
-        return intersection
-    except :
-        print(anchor.anchor_id, map_id_1, map_id_2)
-        exit()
+    intersection = mapping_dict[map_id_1].intersection(mapping_dict[map_id_2])
+    intersection = sorted(intersection)
+    return intersection
 
 
 def get_overlap_size(mapping_pos_1, mapping_pos_2) :
