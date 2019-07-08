@@ -341,10 +341,6 @@ def main() :
                             last_label_copy = removed_anchor_labels_copy[1][1]
                             first_label_aln_1 = aln_1.get_corresponding_contig_map_label(intersection[0])
 
-                            if anchor == 20:
-                                print(intersection)
-                                print(aln_copy)
-
                             if aln_1.orientation == "+" :
                                 aln_copy.set_map_start(maps_to_contigs[aln_1.map_id].get_label_position_on_map(last_label_copy))
                                 anchor_dict[anchor].alignments[i].set_map_end(maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label_aln_1))
