@@ -18,7 +18,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='biscot',  
-    version='1.0',
+    version='0.1',
     scripts=['biscot.py'] ,
     author="Benjamin Istace, Caroline Belser, Jean-Marc Aury",
     author_email="bistace@genoscope.cns.fr",
