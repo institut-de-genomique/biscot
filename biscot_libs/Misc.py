@@ -104,7 +104,9 @@ def mute_agp_file(agp_file_path, changes_file_path, prefix) :
             if scaffold in changes_dict :
                 change_found = False
                 for change in changes_dict[scaffold] :
-                    if change[0] == line[1] and agp_dict[scaffold][i+1][6] != "scaffold" :
+                    # Verify that the position is the same, that we are not examining an 'N' line and that the contig is at least 30kb long
+                    if (change[0] == line[1]) and (agp_dict[scaffold][i+1][6] != "scaffold") and (int(agp_dict[scaffold][i+1][7]) - int(agp_dict[scaffold][i+1][6]) > 30000):
+
                         # Change start of next line on scaffold
                         agp_dict[scaffold][i+1][1] = str(int(agp_dict[scaffold][i+1][1]) + int(change[2]))
 

@@ -581,12 +581,6 @@ def main() :
 
             # The map doesn't share any label with the next one
             if not intersection :
-                if contig_map_1 == 135 :
-                    print(contig_map_1)
-                    print(contig_map_1_mapping_pos)
-                    print(contig_map_2)
-                    print(contig_map_2_mapping_pos)
-
                 if contig_map_1 not in previous_contig_maps :
                     agp_contig_start = maps_to_contigs[contig_map_1].start
                     agp_contig_end = maps_to_contigs[contig_map_1].end
@@ -611,6 +605,10 @@ def main() :
                     agp_contig_end,
                     contig_map_1_mapping_pos[2]))
 
+                # Save start and stop coordinates to be sure it is of sufficient size if we need to align it
+                previous_agp_scaffold_start = agp_scaffold_start
+                previous_agp_scaffold_end = agp_scaffold_end
+
                 contig_name = maps_to_contigs[contig_map_1].base_contig_name
                 seq = Seq(dict_sequences[contig_name][agp_contig_start:agp_contig_end])
 
@@ -632,9 +630,6 @@ def main() :
                     elif contig_map_1_mapping_pos[2] == "+" and contig_map_2_mapping_pos[2] == "-" :
                         contig_map_1_length_delta = 13
                         contig_map_2_length_delta = 13
-                        if contig_map_1 == 135 :
-                            print(contig_map_1_length_delta)
-                            print(contig_map_2_length_delta)
 
                     elif contig_map_1_mapping_pos[2] == "-" and contig_map_2_mapping_pos[2] == "+" :
                         contig_map_1_length_delta = contig_map_1_mapping_pos[3]
@@ -662,7 +657,8 @@ def main() :
                     fasta.write("N" * number_of_N_to_add)
 
                     # If the number of Ns is small, verify if the two zones are overlapping by aligning them during phase 2
-                    if number_of_N_to_add <= 100 :
+                    # Also verify that the sequence we want to align is at least 30kb long
+                    if number_of_N_to_add <= 100 and previous_agp_scaffold_end - previous_agp_scaffold_start > 30000:
                         scaffolds_N_positions[agp_scaffold_name].append((agp_scaffold_start, agp_scaffold_end))
 
                     agp_id += 1
@@ -721,14 +717,19 @@ def main() :
 
             if aln_ref_end :
                 changes_file.write("%s\t%s\t%s\t%s\t%s\n" % (scaffold_name, start, aln_ref_end, aln_query_end, ref_size))
+
+
     changes_file.close()
 
 
     logging.info("Generating new AGP file")
     Misc.mute_agp_file("../Phase_1/%s.agp" % (args.prefix), "changes.txt", args.prefix)
-    os.remove("blat_output.tmp")
-    os.remove("seq_1.tmp")
-    os.remove("seq_2.tmp")
+    try :
+        os.remove("blat_output.tmp")
+        os.remove("seq_1.tmp")
+        os.remove("seq_2.tmp")
+    except :
+        logging.debug("No alignment to remove!")
     shutil.move(args.prefix + ".agp", os.path.join(os.path.abspath(".."), args.prefix + ".agp"))
 
     logging.info("Generating final scaffolds file")
