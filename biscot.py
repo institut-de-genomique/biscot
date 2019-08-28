@@ -293,6 +293,7 @@ def main() :
                             aln_copy.set_map_id(new_map_id)
 
                             maps_to_contigs[aln_2.map_id].size = maps_to_contigs[aln_2.map_id].end - maps_to_contigs[aln_2.map_id].start
+
                             
                             if aln_2.orientation == "-" :
                                 maps_to_contigs[aln_2.map_id].update_labels(aln_2.map_end)
