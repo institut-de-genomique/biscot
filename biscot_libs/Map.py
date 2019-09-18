@@ -92,7 +92,7 @@ class Map :
             self.labels.append((label_id, label_position, channel))
 
 
-    def update_labels(self, difference) :
+    def update_labels(self, difference=0) :
         """
         Removes labels that have a position > self.end or < self.start
 

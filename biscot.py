@@ -237,14 +237,20 @@ def main() :
 
                             # If map 1 mapped better than map 2, we conserve alignment
                             # Otherwise, we delete it
-                            nb_labels_mapped_aln_1 = len(aln_1.get_anchor_labels_in_interval(aln_2.anchor_start, aln_2.anchor_end, anchor_dict[anchor])) / (len(maps_to_contigs[aln_1.map_id].labels) + 1)
-                            nb_labels_mapped_aln_2 = len(aln_2.get_anchor_labels_in_interval(aln_2.anchor_start, aln_2.anchor_end, anchor_dict[anchor])) / (len(maps_to_contigs[aln_2.map_id].labels) + 1)
+                            nb_labels_mapped_aln_1 = len(aln_1.get_anchor_labels_in_interval(aln_1.anchor_start, aln_1.anchor_end, anchor_dict[anchor])) / (len(maps_to_contigs[aln_1.map_id].labels) + 1)
+                            nb_labels_mapped_aln_2 = len(aln_2.get_anchor_labels_in_interval(aln_1.anchor_start, aln_1.anchor_end, anchor_dict[anchor])) / (len(maps_to_contigs[aln_2.map_id].labels) + 1)
 
-                            if nb_labels_mapped_aln_1 < nb_labels_mapped_aln_2 : 
+                            if nb_labels_mapped_aln_1 <= nb_labels_mapped_aln_2 : 
                                 aln_to_remove[anchor].append(i)
                                 anchor_dict[anchor].maps = [k for k in anchor_dict[anchor].maps if k != aln_1.map_id]
                                 logging.debug("Anchor %s : Map %s is badly mapped, alignment will be removed (%s vs %s)" % (anchor, aln_1.map_id, nb_labels_mapped_aln_1, nb_labels_mapped_aln_2))
                                 continue 
+
+                            if aln_1.get_first_label() == aln_2.get_first_label() and aln_1.get_last_label() == aln_2.get_last_label():
+                                aln_to_remove[anchor].append(i)
+                                anchor_dict[anchor].maps = [k for k in anchor_dict[anchor].maps if k != aln_1.map_id]
+                                logging.debug("Anchor %s : Map %s is completely contained in map %s, removing alignment." % (anchor, aln_1.map_id, aln_2.map_id))
+                                continue
 
                             logging.debug("Anchor %s : Map %s mapped better (%s) than map %s (%s), splitting alignment" % (anchor, aln_1.map_id, nb_labels_mapped_aln_1, aln_2.map_id, nb_labels_mapped_aln_2))
 
@@ -316,13 +322,19 @@ def main() :
 
                             # If map 2 mapped better than map 1, we conserve alignment
                             # Otherwise, we delete it
-                            nb_labels_mapped_aln_1 = len(aln_1.get_anchor_labels_in_interval(aln_1.anchor_start, aln_1.anchor_end, anchor_dict[anchor])) / len(maps_to_contigs[aln_1.map_id].labels)
-                            nb_labels_mapped_aln_2 = len(aln_2.get_anchor_labels_in_interval(aln_1.anchor_start, aln_1.anchor_end, anchor_dict[anchor])) / len(maps_to_contigs[aln_2.map_id].labels)
+                            nb_labels_mapped_aln_1 = len(aln_1.get_anchor_labels_in_interval(aln_2.anchor_start, aln_2.anchor_end, anchor_dict[anchor])) / len(maps_to_contigs[aln_1.map_id].labels)
+                            nb_labels_mapped_aln_2 = len(aln_2.get_anchor_labels_in_interval(aln_2.anchor_start, aln_2.anchor_end, anchor_dict[anchor])) / len(maps_to_contigs[aln_2.map_id].labels)
 
-                            if nb_labels_mapped_aln_2 < nb_labels_mapped_aln_1 :
+                            if (nb_labels_mapped_aln_2 <= nb_labels_mapped_aln_1) :
                                 aln_to_remove[anchor].append(j)
                                 anchor_dict[anchor].maps = [k for k in anchor_dict[anchor].maps if k != aln_2.map_id]
                                 logging.debug("Anchor %s : Map %s is badly mapped, alignment will be removed (%s vs %s)" % (anchor, aln_2.map_id, nb_labels_mapped_aln_2, nb_labels_mapped_aln_1))
+                                continue
+    
+                            if aln_1.get_first_label() == aln_2.get_first_label() and aln_1.get_last_label() == aln_2.get_last_label():
+                                aln_to_remove[anchor].append(j)
+                                anchor_dict[anchor].maps = [k for k in anchor_dict[anchor].maps if k != aln_2.map_id]
+                                logging.debug("Anchor %s : Map %s is completely contained in map %s, removing alignment." % (anchor, aln_2.map_id, aln_1.map_id))
                                 continue
 
                             logging.debug("Anchor %s : Map %s mapped better (%s) than map %s (%s), splitting alignment" % (anchor, aln_2.map_id, nb_labels_mapped_aln_2, aln_1.map_id, nb_labels_mapped_aln_1))
@@ -364,7 +376,13 @@ def main() :
                             new_map.size = copy.deepcopy(maps_to_contigs[aln_1.map_id].size)
                             new_map.labels = copy.deepcopy(maps_to_contigs[aln_1.map_id].labels)
                             if aln_copy.orientation == "+" :
-                                new_map.update_labels(aln_copy.map_start)
+                                try:
+                                    new_map.update_labels(aln_copy.map_start)
+                                except:
+                                    print(aln_1)
+                                    print(aln_copy)
+                                    print(last_label_copy)
+                                    exit()
                                 aln_copy.map_end -= aln_copy.map_start
                                 aln_copy.map_start = 1
                             maps_to_contigs[new_map_id] = new_map

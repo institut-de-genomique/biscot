@@ -57,7 +57,8 @@ class Anchor :
                 Alignment object describing an alignment between a map and an anchor
         """
 
-        self.alignments.append(alignment)
+        if alignment.anchor_start < alignment.anchor_end:
+            self.alignments.append(alignment)
 
 
     def sort_alignments(self) :

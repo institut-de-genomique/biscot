@@ -104,6 +104,30 @@ class Alignment :
         return set(self.label_mappings.keys())
 
 
+    def get_first_label(self) :
+        """
+        Returns the first label of an alignment
+
+        Returns :
+            label : int
+                First label
+        """
+
+        return min(self.label_mappings.keys())
+
+
+    def get_last_label(self) :
+        """
+        Returns the last label of an alignment
+
+        Returns :
+            label : int
+                Last label
+        """
+
+        return max(self.label_mappings.keys())
+
+
     def get_anchor_labels_in_interval(self, start, end, anchor) :
         """
         Returns all anchor labels that were aligned to a map and that are between two positions
