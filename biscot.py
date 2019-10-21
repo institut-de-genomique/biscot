@@ -643,20 +643,26 @@ def main() :
                     contig_map_1_length_delta = 0
                     
                     if contig_map_1_mapping_pos[2] == "+" and contig_map_2_mapping_pos[2] == "+" :
-                        contig_map_1_length_delta = maps_to_contigs[contig_map_1].end - contig_map_1_mapping_pos[4]
+                        contig_map_1_length_delta = maps_to_contigs[contig_map_1].end - (contig_map_1_mapping_pos[4] + maps_to_contigs[contig_map_1].start)
                         contig_map_2_length_delta = contig_map_2_mapping_pos[3]
 
                     elif contig_map_1_mapping_pos[2] == "+" and contig_map_2_mapping_pos[2] == "-" :
-                        contig_map_1_length_delta = maps_to_contigs[contig_map_1].end - contig_map_1_mapping_pos[4]
-                        contig_map_2_length_delta = maps_to_contigs[contig_map_2].end - contig_map_2_mapping_pos[3]
+                        contig_map_1_length_delta = maps_to_contigs[contig_map_1].end - (contig_map_1_mapping_pos[4] + maps_to_contigs[contig_map_1].start)
+                        contig_map_2_length_delta = maps_to_contigs[contig_map_2].end - (contig_map_2_mapping_pos[3] + maps_to_contigs[contig_map_2].start)
 
                     elif contig_map_1_mapping_pos[2] == "-" and contig_map_2_mapping_pos[2] == "+" :
-                        contig_map_1_length_delta = maps_to_contigs[contig_map_1].end - contig_map_1_mapping_pos[3]
+                        contig_map_1_length_delta = contig_map_1_mapping_pos[4]
                         contig_map_2_length_delta = contig_map_2_mapping_pos[3]
 
                     elif contig_map_1_mapping_pos[2] == "-" and contig_map_2_mapping_pos[2] == "-" :
-                        contig_map_1_length_delta = maps_to_contigs[contig_map_1].end - contig_map_1_mapping_pos[3]
-                        contig_map_2_length_delta = maps_to_contigs[contig_map_2].end - contig_map_2_mapping_pos[3]
+                        contig_map_1_length_delta = contig_map_1_mapping_pos[4]
+                        contig_map_2_length_delta = maps_to_contigs[contig_map_2].end - (contig_map_2_mapping_pos[3] + maps_to_contigs[contig_map_2].start)
+
+                    if contig_map_1_length_delta < 0 and (maps_to_contigs[contig_map_1].end == contig_map_1_mapping_pos[4] or maps_to_contigs[contig_map_1].end  == contig_map_1_mapping_pos[3]) :
+                        contig_map_1_length_delta = 0
+
+                    if contig_map_2_length_delta < 0 and maps_to_contigs[contig_map_2].end == contig_map_2_mapping_pos[3] :
+                        contig_map_2_length_delta = 0
 
                     number_of_N_to_add = space_between_contig_maps_labels - contig_map_1_length_delta - contig_map_2_length_delta
 
