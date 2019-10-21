@@ -283,7 +283,7 @@ def main() :
                             new_map = Map.Map(new_map_id, maps_to_contigs[aln_copy.map_id].base_contig_name, maps_to_contigs[aln_copy.map_id].size)
                             if aln_2.orientation == "+" :
                                 maps_to_contigs[aln_2.map_id].end = maps_to_contigs[aln_2.map_id].start + maps_to_contigs[aln_2.map_id].get_label_position_on_map(first_label_aln_2)
-                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_2.map_id].end + 1) + ":" + str(maps_to_contigs[aln_2.map_id].size)
+                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_2.map_id].end + 1) + ":" + str(maps_to_contigs[aln_2.map_id].end - maps_to_contigs[aln_2.map_id].start)
                             else :
                                 contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_2.map_id].start + 1) + ":" + str(aln_copy.map_start)
                                 maps_to_contigs[aln_2.map_id].start = maps_to_contigs[aln_2.map_id].get_label_position_on_map(first_label_aln_2)                           
@@ -304,6 +304,10 @@ def main() :
                             if aln_2.orientation == "-" :
                                 maps_to_contigs[aln_2.map_id].update_labels(aln_2.map_end)
                             new_map_id += 1
+
+                            if aln_2.orientation == "-" :
+                                anchor_dict[anchor].alignments[j].map_start -= anchor_dict[anchor].alignments[j].map_end
+                                anchor_dict[anchor].alignments[j].map_end = 1
 
                             anchor_dict[anchor].add_alignment(aln_copy)
                             contained_maps[anchor].append(i)
@@ -367,7 +371,7 @@ def main() :
                             new_map = Map.Map(new_map_id, maps_to_contigs[aln_copy.map_id].base_contig_name, maps_to_contigs[aln_copy.map_id].size)
                             if aln_1.orientation == "+" :
                                 maps_to_contigs[aln_1.map_id].end = maps_to_contigs[aln_1.map_id].start + maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label_aln_1)
-                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_1.map_id].end + 1) + ":" + str(maps_to_contigs[aln_1.map_id].size)
+                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_1.map_id].end + 1) + ":" + str(maps_to_contigs[aln_1.map_id].end - maps_to_contigs[aln_1.map_id].start)
                             else :
                                 contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_1.map_id].start + 1) + ":" + str(aln_copy.map_start)
                                 maps_to_contigs[aln_1.map_id].start = maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label_aln_1)
@@ -376,13 +380,7 @@ def main() :
                             new_map.size = copy.deepcopy(maps_to_contigs[aln_1.map_id].size)
                             new_map.labels = copy.deepcopy(maps_to_contigs[aln_1.map_id].labels)
                             if aln_copy.orientation == "+" :
-                                try:
-                                    new_map.update_labels(aln_copy.map_start)
-                                except:
-                                    print(aln_1)
-                                    print(aln_copy)
-                                    print(last_label_copy)
-                                    exit()
+                                new_map.update_labels(aln_copy.map_start)
                                 aln_copy.map_end -= aln_copy.map_start
                                 aln_copy.map_start = 1
                             maps_to_contigs[new_map_id] = new_map
@@ -392,6 +390,10 @@ def main() :
 
                             if aln_1.orientation == "-" :
                                 maps_to_contigs[aln_1.map_id].update_labels(aln_1.map_end)
+
+                            if aln_1.orientation == "-" :
+                                anchor_dict[anchor].alignments[i].map_start -= anchor_dict[anchor].alignments[i].map_end
+                                anchor_dict[anchor].alignments[i].map_end = 1
 
                             new_map_id += 1
 
@@ -641,6 +643,11 @@ def main() :
                 if i < len(anchor_maps) - 1 : 
                     space_between_contig_maps_labels = contig_map_2_mapping_pos[0] - contig_map_1_mapping_pos[1]
                     contig_map_1_length_delta = 0
+
+                    # print(maps_to_contigs[contig_map_1])
+                    # print(contig_map_1_mapping_pos)
+                    # print(maps_to_contigs[contig_map_2])
+                    # print(contig_map_2_mapping_pos)
                     
                     if contig_map_1_mapping_pos[2] == "+" and contig_map_2_mapping_pos[2] == "+" :
                         contig_map_1_length_delta = maps_to_contigs[contig_map_1].end - (contig_map_1_mapping_pos[4] + maps_to_contigs[contig_map_1].start)
@@ -663,6 +670,10 @@ def main() :
 
                     if contig_map_2_length_delta < 0 and maps_to_contigs[contig_map_2].end == contig_map_2_mapping_pos[3] :
                         contig_map_2_length_delta = 0
+
+                    # print(contig_map_1_length_delta)
+                    # print(contig_map_2_length_delta)
+                    # print(space_between_contig_maps_labels)
 
                     number_of_N_to_add = space_between_contig_maps_labels - contig_map_1_length_delta - contig_map_2_length_delta
 
