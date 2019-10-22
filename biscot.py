@@ -203,6 +203,8 @@ def main() :
     new_map_id = max(maps_to_contigs.keys()) + 1
     aln_to_remove = defaultdict(list)
     contained_maps = defaultdict(list)
+    f = open("contained_maps.txt", "w")
+    f.close()
     for anchor in anchor_dict :
         modification = True
         while modification :
@@ -264,6 +266,11 @@ def main() :
                             aln_copy.set_anchor_start(aln_1.anchor_end - 100)
 
                             removed_anchor_labels_copy = aln_copy.update_mappings(anchor_dict[anchor])
+                            if None in removed_anchor_labels_copy :
+                                aln_to_remove[anchor].append(i)
+                                anchor_dict[anchor].maps = [k for k in anchor_dict[anchor].maps if k != aln_1.map_id]
+                                continue
+
                             first_label_copy = removed_anchor_labels_copy[0][1]
                             last_label_copy = removed_anchor_labels_copy[1][1]
                             first_label_aln_2 = aln_2.get_corresponding_contig_map_label(intersection[0])
@@ -282,14 +289,15 @@ def main() :
 
                             new_map = Map.Map(new_map_id, maps_to_contigs[aln_copy.map_id].base_contig_name, maps_to_contigs[aln_copy.map_id].size)
                             if aln_2.orientation == "+" :
+                                previous_aln_2_end = maps_to_contigs[aln_2.map_id].end
                                 maps_to_contigs[aln_2.map_id].end = maps_to_contigs[aln_2.map_id].start + maps_to_contigs[aln_2.map_id].get_label_position_on_map(first_label_aln_2)
-                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_2.map_id].end + 1) + ":" + str(maps_to_contigs[aln_2.map_id].end - maps_to_contigs[aln_2.map_id].start)
+                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_2.map_id].end + 1) + ":" + str(previous_aln_2_end)
                             else :
                                 contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_2.map_id].start + 1) + ":" + str(aln_copy.map_start)
                                 maps_to_contigs[aln_2.map_id].start = maps_to_contigs[aln_2.map_id].get_label_position_on_map(first_label_aln_2)                           
                             new_map.update_map(contig_name, dict_sequences)
                             # Conserves the size of the original size
-                            new_map.size = copy.deepcopy(maps_to_contigs[aln_2.map_id].size)
+                            new_map.size = new_map.end - new_map.start
                             new_map.labels = copy.deepcopy(maps_to_contigs[aln_2.map_id].labels)
                             if aln_copy.orientation == "+" :
                                 new_map.update_labels(aln_copy.map_start)
@@ -299,7 +307,6 @@ def main() :
                             aln_copy.set_map_id(new_map_id)
 
                             maps_to_contigs[aln_2.map_id].size = maps_to_contigs[aln_2.map_id].end - maps_to_contigs[aln_2.map_id].start
-
                             
                             if aln_2.orientation == "-" :
                                 maps_to_contigs[aln_2.map_id].update_labels(aln_2.map_end)
@@ -308,6 +315,15 @@ def main() :
                             if aln_2.orientation == "-" :
                                 anchor_dict[anchor].alignments[j].map_start -= anchor_dict[anchor].alignments[j].map_end
                                 anchor_dict[anchor].alignments[j].map_end = 1
+
+                            with open("contained_maps.txt", "a") as f:
+                                print(aln_2, file = f)
+                                print(aln_1, file = f)
+                                print(aln_copy, file = f)
+                                print(maps_to_contigs[aln_2.map_id], file = f)
+                                print(maps_to_contigs[aln_1.map_id], file = f)
+                                print(maps_to_contigs[aln_copy.map_id], file = f)
+                                print("", file = f)
 
                             anchor_dict[anchor].add_alignment(aln_copy)
                             contained_maps[anchor].append(i)
@@ -353,6 +369,10 @@ def main() :
                             aln_copy.set_anchor_start(aln_2.anchor_end - 100)
 
                             removed_anchor_labels_copy = aln_copy.update_mappings(anchor_dict[anchor])
+                            if None in removed_anchor_labels_copy :
+                                aln_to_remove[anchor].append(j)
+                                anchor_dict[anchor].maps = [k for k in anchor_dict[anchor].maps if k != aln_2.map_id]
+                                continue
 
                             first_label_copy = removed_anchor_labels_copy[0][1]
                             last_label_copy = removed_anchor_labels_copy[1][1]
@@ -370,14 +390,15 @@ def main() :
 
                             new_map = Map.Map(new_map_id, maps_to_contigs[aln_copy.map_id].base_contig_name, maps_to_contigs[aln_copy.map_id].size)
                             if aln_1.orientation == "+" :
+                                previous_aln_1_end = maps_to_contigs[aln_1.map_id].end
                                 maps_to_contigs[aln_1.map_id].end = maps_to_contigs[aln_1.map_id].start + maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label_aln_1)
-                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_1.map_id].end + 1) + ":" + str(maps_to_contigs[aln_1.map_id].end - maps_to_contigs[aln_1.map_id].start)
+                                contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_1.map_id].end + 1) + ":" + str(previous_aln_1_end)
                             else :
                                 contig_name = maps_to_contigs[aln_copy.map_id].base_contig_name + "_subseq_" + str(maps_to_contigs[aln_1.map_id].start + 1) + ":" + str(aln_copy.map_start)
                                 maps_to_contigs[aln_1.map_id].start = maps_to_contigs[aln_1.map_id].get_label_position_on_map(first_label_aln_1)
                             new_map.update_map(contig_name, dict_sequences)
                             # Conserves the size of the original map
-                            new_map.size = copy.deepcopy(maps_to_contigs[aln_1.map_id].size)
+                            new_map.size = new_map.end - new_map.start
                             new_map.labels = copy.deepcopy(maps_to_contigs[aln_1.map_id].labels)
                             if aln_copy.orientation == "+" :
                                 new_map.update_labels(aln_copy.map_start)
@@ -394,6 +415,15 @@ def main() :
                             if aln_1.orientation == "-" :
                                 anchor_dict[anchor].alignments[i].map_start -= anchor_dict[anchor].alignments[i].map_end
                                 anchor_dict[anchor].alignments[i].map_end = 1
+
+                            with open("contained_maps.txt", "a") as f:
+                                print(aln_1, file = f)
+                                print(aln_2, file = f)
+                                print(aln_copy, file = f)
+                                print(maps_to_contigs[aln_1.map_id], file = f)
+                                print(maps_to_contigs[aln_2.map_id], file = f)
+                                print(maps_to_contigs[aln_copy.map_id], file = f)
+                                print("", file = f)
 
                             new_map_id += 1
 
@@ -421,6 +451,8 @@ def main() :
     agp = open(args.prefix + ".agp", "w")
     fasta = open(args.prefix + ".fasta", "w")
     scaffolds_N_positions = defaultdict(list)
+    f = open("gaps.txt", "w")
+    f.close()
     for anchor_number, anchor in enumerate(sorted(anchor_dict.keys())) :
         map_occurrences = defaultdict(int)
         previous_contig_maps = {}
@@ -644,10 +676,11 @@ def main() :
                     space_between_contig_maps_labels = contig_map_2_mapping_pos[0] - contig_map_1_mapping_pos[1]
                     contig_map_1_length_delta = 0
 
-                    # print(maps_to_contigs[contig_map_1])
-                    # print(contig_map_1_mapping_pos)
-                    # print(maps_to_contigs[contig_map_2])
-                    # print(contig_map_2_mapping_pos)
+                    with open("gaps.txt", "a") as f :
+                        print(maps_to_contigs[contig_map_1], file = f)
+                        print(contig_map_1_mapping_pos, file = f)
+                        print(maps_to_contigs[contig_map_2], file = f)
+                        print(contig_map_2_mapping_pos, file = f)
                     
                     if contig_map_1_mapping_pos[2] == "+" and contig_map_2_mapping_pos[2] == "+" :
                         contig_map_1_length_delta = maps_to_contigs[contig_map_1].end - (contig_map_1_mapping_pos[4] + maps_to_contigs[contig_map_1].start)
@@ -671,9 +704,10 @@ def main() :
                     if contig_map_2_length_delta < 0 and maps_to_contigs[contig_map_2].end == contig_map_2_mapping_pos[3] :
                         contig_map_2_length_delta = 0
 
-                    # print(contig_map_1_length_delta)
-                    # print(contig_map_2_length_delta)
-                    # print(space_between_contig_maps_labels)
+                    with open("gaps.txt", "a") as f :
+                        print(contig_map_1_length_delta, file = f)
+                        print(contig_map_2_length_delta, file = f)
+                        print(space_between_contig_maps_labels, file = f)
 
                     number_of_N_to_add = space_between_contig_maps_labels - contig_map_1_length_delta - contig_map_2_length_delta
 
