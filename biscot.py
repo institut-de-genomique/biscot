@@ -259,6 +259,8 @@ def main() :
                             # If maps don't share labels, we can't split the alignment
                             intersection = Alignment.find_shared_labels(anchor_dict[anchor], aln_1.map_id, aln_2.map_id)
                             if not intersection :
+                                aln_to_remove[anchor].append(i)
+                                anchor_dict[anchor].maps = [k for k in anchor_dict[anchor].maps if k != aln_1.map_id]
                                 logging.debug("No labels shared, can't split the alignment")
                                 continue
 
@@ -363,6 +365,8 @@ def main() :
                             intersection = Alignment.find_shared_labels(anchor_dict[anchor], aln_1.map_id, aln_2.map_id)
                             if not intersection :
                                 logging.debug("No labels shared, can't split the alignment")
+                                aln_to_remove[anchor].append(j)
+                                anchor_dict[anchor].maps = [k for k in anchor_dict[anchor].maps if k != aln_2.map_id]
                                 continue
 
                             aln_copy = Alignment.copy_alignment(aln_1)
