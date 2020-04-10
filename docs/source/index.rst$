@@ -1,0 +1,39 @@
+Welcome to BiSCoT's documentation!
+==================================
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+BiSCoT Alignment class
+**********************
+.. autoclass:: biscot.Alignment
+   :members: __init__
+
+BiSCoT Blat
+===================
+.. automodule:: biscot.Blat
+   :members:
+
+BiSCoT Key
+===================
+.. automodule:: biscot.Key
+   :members:
+
+BiSCoT Map
+===================
+.. automodule:: biscot.Map
+   :members:
+
+BiSCoT Misc
+===================
+.. automodule:: biscot.Misc
+   :members:
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

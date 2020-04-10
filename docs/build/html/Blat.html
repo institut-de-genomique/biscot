@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Blat module &mdash; Bionano Scaffolding Correction Tool (BiSCOT) 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Key file related methods" href="Key.html" />
+    <link rel="prev" title="Alignment methods" href="Alignment_methods.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Bionano Scaffolding Correction Tool (BiSCOT)
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Alignment.html">Alignment module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Blat module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Key.html">Key file related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Map.html">Map module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Misc.html">General methods</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Bionano Scaffolding Correction Tool (BiSCOT)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Blat module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Blat.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-biscot.Blat">
+<span id="blat-module"></span><h1>Blat module<a class="headerlink" href="#module-biscot.Blat" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="biscot.Blat.blat_phase">
+<code class="sig-prename descclassname">biscot.Blat.</code><code class="sig-name descname">blat_phase</code><span class="sig-paren">(</span><em class="sig-param">contigs_sequence_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Blat.html#blat_phase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Blat.blat_phase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes Blat and modifies an AGP file based on the mappings found</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>contigs_sequence_dict</strong> (<em>dict</em><em>(</em><em>str: str</em><em>)</em>) – Dict containing contigs FASTA sequences</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Blat.get_agp_changes">
+<code class="sig-prename descclassname">biscot.Blat.</code><code class="sig-name descname">get_agp_changes</code><span class="sig-paren">(</span><em class="sig-param">contigs_sequence_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Blat.html#get_agp_changes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Blat.get_agp_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the best blat hit and writes what changes have to be made to the AGP file to incorporate the changes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>contigs_sequence_dict</strong> (<em>dict</em><em>(</em><em>str: str</em><em>)</em>) – Dict containing contigs FASTA sequences</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Blat.mute_agp_file">
+<code class="sig-prename descclassname">biscot.Blat.</code><code class="sig-name descname">mute_agp_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Blat.html#mute_agp_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Blat.mute_agp_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads an AGP file and a changes file and modifies the AGP file lines to incorporate the changes</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Blat.parse_blat">
+<code class="sig-prename descclassname">biscot.Blat.</code><code class="sig-name descname">parse_blat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Blat.html#parse_blat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Blat.parse_blat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the pslReps output file to get various information about the best hit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(true if hit found - False otherwise, max score, reference size, contig_1 end, contig_2 end)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple(bool, int, int, int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Blat.run_blat">
+<code class="sig-prename descclassname">biscot.Blat.</code><code class="sig-name descname">run_blat</code><span class="sig-paren">(</span><em class="sig-param">contig_1</em>, <em class="sig-param">contig_1_start</em>, <em class="sig-param">contig_1_end</em>, <em class="sig-param">contig_1_orientation</em>, <em class="sig-param">contig_2</em>, <em class="sig-param">contig_2_start</em>, <em class="sig-param">contig_2_end</em>, <em class="sig-param">contig_2_orientation</em>, <em class="sig-param">contigs_sequence_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Blat.html#run_blat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Blat.run_blat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launches Blat, then sorts the psl file and extracts the best match</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>contig_1</strong> (<em>str</em>) – Name of the first contig</p></li>
+<li><p><strong>contig_1_start</strong> (<em>int</em>) – Starting position of the sequence to extract</p></li>
+<li><p><strong>contig_1_end</strong> (<em>int</em>) – End position of the sequence to extract</p></li>
+<li><p><strong>contig_1_orientation</strong> (<em>str</em>) – Strand orientation of the first contig</p></li>
+<li><p><strong>contig_2</strong> (<em>str</em>) – Name of the second contig</p></li>
+<li><p><strong>contig_2_start</strong> (<em>int</em>) – Starting position of the sequence to extract</p></li>
+<li><p><strong>contig_2_end</strong> (<em>int</em>) – End position of the sequence to extract</p></li>
+<li><p><strong>contig_2_orientation</strong> (<em>str</em>) – Strand orientation of the second contig</p></li>
+<li><p><strong>contigs_sequence_dict</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em>) – Dict containing the contigs fasta sequence</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Blat.write_new_agp">
+<code class="sig-prename descclassname">biscot.Blat.</code><code class="sig-name descname">write_new_agp</code><span class="sig-paren">(</span><em class="sig-param">new_agp_lines</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Blat.html#write_new_agp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Blat.write_new_agp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a new AGP file incorporating the Blat changes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_agp_lines</strong> (<em>list</em><em>(</em><em>list</em><em>(</em><em>str</em><em>)</em><em>)</em>) – List containing the new AGP lines</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Key.html" class="btn btn-neutral float-right" title="Key file related methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Alignment_methods.html" class="btn btn-neutral float-left" title="Alignment methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Istace, Caroline Belser, Jean-Marc Aury
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

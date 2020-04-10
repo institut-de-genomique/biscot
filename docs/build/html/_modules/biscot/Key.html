@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>biscot.Key &mdash; Bionano Scaffolding Correction Tool (BiSCOT) 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Bionano Scaffolding Correction Tool (BiSCOT)
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Alignment.html">Alignment module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Blat.html">Blat module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Key.html">Key file related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Map.html">Map module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Misc.html">General methods</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Bionano Scaffolding Correction Tool (BiSCOT)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>biscot.Key</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for biscot.Key</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+
+<div class="viewcode-block" id="parse_key"><a class="viewcode-back" href="../../Key.html#biscot.Key.parse_key">[docs]</a><span class="k">def</span> <span class="nf">parse_key</span><span class="p">(</span><span class="n">key_file_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses a Bionano &#39;.key&#39; file and extracts informations about contigs and their contig map counterparts</span>
+<span class="sd">    </span>
+<span class="sd">    :param key_file_path: Path to a &#39;.key&#39; file</span>
+<span class="sd">    :type key_file_path: str</span>
+<span class="sd">    :return: Dict containing the correspondance between contigs and contig maps</span>
+<span class="sd">    :rtype: dict((id: int, channel: int), (contig_name: str, start: int, end:int, size: int))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">key_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">key_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">key_file_path</span><span class="p">)</span>
+    <span class="n">contig_name</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># Remove headers</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">key_file</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;CompntId&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">key_file</span><span class="p">:</span>
+        <span class="n">component_id</span><span class="p">,</span> <span class="n">component_name</span><span class="p">,</span> <span class="n">component_length</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;subseq&quot;</span> <span class="ow">in</span> <span class="n">component_name</span><span class="p">:</span>
+            <span class="n">contig_name</span><span class="p">,</span> <span class="n">start_and_end</span> <span class="o">=</span> <span class="n">component_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_subseq_&quot;</span><span class="p">)</span>
+            <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">start_and_end</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">contig_name</span> <span class="o">=</span> <span class="n">component_name</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">component_length</span>
+
+        <span class="n">component_id</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">component_id</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Create one key entry per channel</span>
+        <span class="n">key_dict</span><span class="p">[(</span><span class="n">component_id</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">contig_name</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">key_dict</span><span class="p">[(</span><span class="n">component_id</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">contig_name</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">size</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">component_length</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;WARNING: Map </span><span class="si">{component_id}</span><span class="s2"> (contig </span><span class="si">{contig_name}</span><span class="s2">) has a wrong size&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">key_dict</span></div>
+
+
+<div class="viewcode-block" id="extend_key_dict"><a class="viewcode-back" href="../../Key.html#biscot.Key.extend_key_dict">[docs]</a><span class="k">def</span> <span class="nf">extend_key_dict</span><span class="p">(</span><span class="n">key_dict</span><span class="p">,</span> <span class="n">reference_maps_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds the reference id to the key_dict key as a contig can be placed multiple times and we don&#39;t want to modify its key informations erroneously in case of contained alignments</span>
+<span class="sd">    </span>
+<span class="sd">    :param key_dict: Dict containing the correspondance between contigs and contig maps</span>
+<span class="sd">    :type key_dict: dict((int, int), (str, int, int, int))</span>
+<span class="sd">    :param reference_maps_dict: Dict containing reference anchor maps</span>
+<span class="sd">    :type reference_maps_dict: dict(int, Map)</span>
+<span class="sd">    :return: Key dict containing the correspondance between contigs and contig maps, with the added information of reference id</span>
+<span class="sd">    :rtype: dict((int, int, int), (str, int, int, int))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">extended_key_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">reference_map</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">alignment</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">reference_map</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">:</span>
+            <span class="n">extended_key_dict</span><span class="p">[(</span><span class="n">alignment</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reference_map</span><span class="p">)]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span>
+                <span class="n">key_dict</span><span class="p">[(</span><span class="n">alignment</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+            <span class="p">)</span>
+            <span class="n">extended_key_dict</span><span class="p">[(</span><span class="n">alignment</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">reference_map</span><span class="p">)]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span>
+                <span class="n">key_dict</span><span class="p">[(</span><span class="n">alignment</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">extended_key_dict</span></div>
+
+
+<div class="viewcode-block" id="get_max_id"><a class="viewcode-back" href="../../Key.html#biscot.Key.get_max_id">[docs]</a><span class="k">def</span> <span class="nf">get_max_id</span><span class="p">(</span><span class="n">key_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets the max id found inside a key_dict keys</span>
+<span class="sd">    </span>
+<span class="sd">    :param key_dict: Dict containing the correspondance between contigs and contig maps</span>
+<span class="sd">    :type key_dict: dict((int, int, int), (str, int, int, int))</span>
+<span class="sd">    :return: Maximum value of the key_dict keys</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">max_id</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">map_id</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">key_dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">max_id</span> <span class="o">&lt;</span> <span class="n">map_id</span><span class="p">:</span>
+            <span class="n">max_id</span> <span class="o">=</span> <span class="n">map_id</span>
+    <span class="k">return</span> <span class="n">max_id</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Istace, Caroline Belser, Jean-Marc Aury
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,36 +1,22 @@
-import setuptools
-from pathlib import Path
-from typing import List
-from distutils.command.clean import clean
+from distutils.core import setup
 
-
-def parse_requirements(filename: str) -> List[str]:
-    """Return requirements from requirements file."""
-    # Ref: https://stackoverflow.com/a/42033122/
-    requirements = (Path(__file__).parent / filename).read_text().strip().split('\n')
-    requirements = [r.strip() for r in requirements]
-    requirements = [r for r in sorted(requirements) if r and not r.startswith('#')]
-    return requirements
-
-
-with open("README.md", "r") as fh:
-    long_description = fh.read()
-
-setuptools.setup(
-    name='biscot',  
-    version='0.1',
-    scripts=['biscot.py'] ,
+setup(
+    name="biscot",
+    packages=["biscot"],
+    version="2.0",
+    license="CeCILL",
+    description="Bionano SCaffolding Correction Tool",
     author="Benjamin Istace, Caroline Belser, Jean-Marc Aury",
     author_email="bistace@genoscope.cns.fr",
-    description="Bionano SCaffolding Correction Tool",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
     url="https://github.com/institut-de-genomique/biscot",
-    packages=["biscot_libs"],
-    install_requires=parse_requirements('requirements.txt'),
+    download_url="https://github.com/institut-de-genomique/biscot/archive/v2.0.tar.gz",
+    keywords=["Genome", "Scaffolding", "Bionano",],
+    install_requires=["argparse", "biopython", "coloredlogs",],
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: CeCILL",
-        "Operating System :: Linux",
-    ]
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Science/Research",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
+        "License :: OSI Approved :: CEA CNRS Inria Logiciel Libre License, version 2.1 (CeCILL-2.1)",
+        "Programming Language :: Python :: 3.6",
+    ],
 )

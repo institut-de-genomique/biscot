@@ -1,0 +1,555 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>biscot.Blat &mdash; Bionano Scaffolding Correction Tool (BiSCOT) 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Bionano Scaffolding Correction Tool (BiSCOT)
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Alignment.html">Alignment module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Blat.html">Blat module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Key.html">Key file related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Map.html">Map module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Misc.html">General methods</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Bionano Scaffolding Correction Tool (BiSCOT)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>biscot.Blat</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for biscot.Blat</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">Bio.Alphabet</span> <span class="kn">import</span> <span class="n">generic_dna</span>
+<span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqRecord</span> <span class="kn">import</span> <span class="n">SeqRecord</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">OrderedDict</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+
+<div class="viewcode-block" id="run_blat"><a class="viewcode-back" href="../../Blat.html#biscot.Blat.run_blat">[docs]</a><span class="k">def</span> <span class="nf">run_blat</span><span class="p">(</span>
+    <span class="n">contig_1</span><span class="p">,</span>
+    <span class="n">contig_1_start</span><span class="p">,</span>
+    <span class="n">contig_1_end</span><span class="p">,</span>
+    <span class="n">contig_1_orientation</span><span class="p">,</span>
+    <span class="n">contig_2</span><span class="p">,</span>
+    <span class="n">contig_2_start</span><span class="p">,</span>
+    <span class="n">contig_2_end</span><span class="p">,</span>
+    <span class="n">contig_2_orientation</span><span class="p">,</span>
+    <span class="n">contigs_sequence_dict</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Launches Blat, then sorts the psl file and extracts the best match</span>
+<span class="sd">    </span>
+<span class="sd">    :param contig_1: Name of the first contig</span>
+<span class="sd">    :type contig_1: str</span>
+<span class="sd">    :param contig_1_start: Starting position of the sequence to extract</span>
+<span class="sd">    :type contig_1_start: int</span>
+<span class="sd">    :param contig_1_end: End position of the sequence to extract</span>
+<span class="sd">    :type contig_1_end: int</span>
+<span class="sd">    :param contig_1_orientation: Strand orientation of the first contig</span>
+<span class="sd">    :type contig_1_orientation: str</span>
+<span class="sd">    :param contig_2: Name of the second contig</span>
+<span class="sd">    :type contig_2: str</span>
+<span class="sd">    :param contig_2_start: Starting position of the sequence to extract</span>
+<span class="sd">    :type contig_2_start: int</span>
+<span class="sd">    :param contig_2_end: End position of the sequence to extract</span>
+<span class="sd">    :type contig_2_end: int</span>
+<span class="sd">    :param contig_2_orientation: Strand orientation of the second contig</span>
+<span class="sd">    :type contig_2_orientation: str</span>
+<span class="sd">    :param contigs_sequence_dict: Dict containing the contigs fasta sequence</span>
+<span class="sd">    :type contigs_sequence_dict: dict(str, str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/tmp_1.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">contig_1_orientation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="n">SeqRecord</span><span class="p">(</span>
+                    <span class="n">Seq</span><span class="p">(</span>
+                        <span class="n">contigs_sequence_dict</span><span class="p">[</span><span class="n">contig_1</span><span class="p">][</span><span class="n">contig_1_start</span><span class="p">:</span><span class="n">contig_1_end</span><span class="p">],</span>
+                        <span class="n">generic_dna</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="n">contig_1</span><span class="p">,</span>
+                    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="n">SeqRecord</span><span class="p">(</span>
+                    <span class="n">Seq</span><span class="p">(</span>
+                        <span class="n">contigs_sequence_dict</span><span class="p">[</span><span class="n">contig_1</span><span class="p">][</span><span class="n">contig_1_start</span><span class="p">:</span><span class="n">contig_1_end</span><span class="p">],</span>
+                        <span class="n">generic_dna</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="n">contig_1</span><span class="p">,</span>
+                    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/tmp_2.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">contig_2_orientation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="n">SeqRecord</span><span class="p">(</span>
+                    <span class="n">Seq</span><span class="p">(</span>
+                        <span class="n">contigs_sequence_dict</span><span class="p">[</span><span class="n">contig_2</span><span class="p">][</span><span class="n">contig_2_start</span><span class="p">:</span><span class="n">contig_2_end</span><span class="p">],</span>
+                        <span class="n">generic_dna</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="n">contig_2</span><span class="p">,</span>
+                    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="n">SeqRecord</span><span class="p">(</span>
+                    <span class="n">Seq</span><span class="p">(</span>
+                        <span class="n">contigs_sequence_dict</span><span class="p">[</span><span class="n">contig_2</span><span class="p">][</span><span class="n">contig_2_start</span><span class="p">:</span><span class="n">contig_2_end</span><span class="p">],</span>
+                        <span class="n">generic_dna</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="n">contig_2</span><span class="p">,</span>
+                    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="n">_</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="s2">&quot;blat&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-noHead&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-minScore=3000&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Phase_2/tmp_1.fasta&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Phase_2/tmp_2.fasta&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Phase_2/tmp.psl&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">stdout</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/blat.out&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span>
+        <span class="n">stderr</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/blat.err&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">_</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;pslSort&quot;</span><span class="p">,</span> <span class="s2">&quot;dirs&quot;</span><span class="p">,</span> <span class="s2">&quot;Phase_2/tmp.psl.sorted&quot;</span><span class="p">,</span> <span class="s2">&quot;/tmp&quot;</span><span class="p">,</span> <span class="s2">&quot;Phase_2/tmp.psl&quot;</span><span class="p">],</span>
+        <span class="n">stdout</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/pslSort.out&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span>
+        <span class="n">stderr</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/pslSort.err&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">_</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="s2">&quot;pslReps&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-nohead&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-singleHit&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Phase_2/tmp.psl.sorted&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Phase_2/tmp.psl.besthit&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Phase_2/tmp.psr&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">stdout</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/pslReps.out&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span>
+        <span class="n">stderr</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/pslReps.err&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="parse_blat"><a class="viewcode-back" href="../../Blat.html#biscot.Blat.parse_blat">[docs]</a><span class="k">def</span> <span class="nf">parse_blat</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses the pslReps output file to get various information about the best hit</span>
+<span class="sd">    </span>
+<span class="sd">    :return: (true if hit found - False otherwise, max score, reference size, contig_1 end, contig_2 end)</span>
+<span class="sd">    :rtype: tuple(bool, int, int, int)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/tmp.psl.besthit&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">blat</span><span class="p">:</span>
+        <span class="n">max_score</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">max_score_line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">blat</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">max_score</span><span class="p">:</span>
+                <span class="n">max_score</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">max_score_line</span> <span class="o">=</span> <span class="n">line</span>
+
+        <span class="k">if</span> <span class="n">max_score</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="kc">True</span><span class="p">,</span>
+                <span class="n">max_score</span><span class="p">,</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">max_score_line</span><span class="p">[</span><span class="mi">14</span><span class="p">]),</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">max_score_line</span><span class="p">[</span><span class="mi">16</span><span class="p">]),</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">max_score_line</span><span class="p">[</span><span class="mi">12</span><span class="p">]),</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_agp_changes"><a class="viewcode-back" href="../../Blat.html#biscot.Blat.get_agp_changes">[docs]</a><span class="k">def</span> <span class="nf">get_agp_changes</span><span class="p">(</span><span class="n">contigs_sequence_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets the best blat hit and writes what changes have to be made to the AGP file to incorporate the changes</span>
+<span class="sd">    </span>
+<span class="sd">    :param contigs_sequence_dict: Dict containing contigs FASTA sequences</span>
+<span class="sd">    :type contigs_sequence_dict: dict(str: str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">agp_lines</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_1/phase_1.agp&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">agp_lines</span><span class="p">):</span>
+        <span class="p">(</span>
+            <span class="n">scaffold_name</span><span class="p">,</span>
+            <span class="n">scaffold_start</span><span class="p">,</span>
+            <span class="n">_</span><span class="p">,</span>
+            <span class="n">_</span><span class="p">,</span>
+            <span class="n">sequence_type</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">other_fields</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">gap_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">other_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="n">sequence_type</span> <span class="o">==</span> <span class="s2">&quot;N&quot;</span> <span class="k">else</span> <span class="mi">100000000000000000</span>
+
+        <span class="k">if</span> <span class="n">gap_size</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="p">(</span>
+                <span class="n">previous_contig</span><span class="p">,</span>
+                <span class="n">previous_contig_start</span><span class="p">,</span>
+                <span class="n">previous_contig_end</span><span class="p">,</span>
+                <span class="n">previous_contig_orientation</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">agp_lines</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">5</span><span class="p">:</span><span class="mi">9</span><span class="p">])</span>
+
+            <span class="n">next_contig</span><span class="p">,</span> <span class="n">next_contig_start</span><span class="p">,</span> <span class="n">next_contig_end</span><span class="p">,</span> <span class="n">next_contig_orientation</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">agp_lines</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">5</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">contigs_sequence_dict</span><span class="p">[</span><span class="n">previous_contig</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">50000</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">contigs_sequence_dict</span><span class="p">[</span><span class="n">next_contig</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">50000</span>
+            <span class="p">):</span>
+                <span class="n">run_blat</span><span class="p">(</span>
+                    <span class="n">previous_contig</span><span class="p">,</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">previous_contig_end</span><span class="p">)</span> <span class="o">-</span> <span class="mi">30000</span><span class="p">,</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">previous_contig_end</span><span class="p">),</span>
+                    <span class="n">previous_contig_orientation</span><span class="p">,</span>
+                    <span class="n">next_contig</span><span class="p">,</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">next_contig_start</span><span class="p">),</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">next_contig_start</span><span class="p">)</span> <span class="o">+</span> <span class="mi">30000</span><span class="p">,</span>
+                    <span class="n">next_contig_orientation</span><span class="p">,</span>
+                    <span class="n">contigs_sequence_dict</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="s2">&quot;Phase_2/tmp.psl.besthit&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;NO MATCH between </span><span class="si">{previous_contig}</span><span class="s2"> and </span><span class="si">{next_contig}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="p">(</span>
+                    <span class="n">match_found</span><span class="p">,</span>
+                    <span class="n">max_score</span><span class="p">,</span>
+                    <span class="n">ref_size</span><span class="p">,</span>
+                    <span class="n">aln_ref_end</span><span class="p">,</span>
+                    <span class="n">aln_query_end</span><span class="p">,</span>
+                <span class="p">)</span> <span class="o">=</span> <span class="n">parse_blat</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">match_found</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;MATCH between </span><span class="si">{previous_contig}</span><span class="s2"> and </span><span class="si">{next_contig}</span><span class="s2">, score: </span><span class="si">{max_score}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/agp_changes.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">changes_file</span><span class="p">:</span>
+                        <span class="n">changes_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                            <span class="s2">&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="o">%</span> <span class="p">(</span>
+                                <span class="n">scaffold_name</span><span class="p">,</span>
+                                <span class="n">scaffold_start</span><span class="p">,</span>
+                                <span class="n">aln_ref_end</span><span class="p">,</span>
+                                <span class="n">aln_query_end</span><span class="p">,</span>
+                                <span class="n">ref_size</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="write_new_agp"><a class="viewcode-back" href="../../Blat.html#biscot.Blat.write_new_agp">[docs]</a><span class="k">def</span> <span class="nf">write_new_agp</span><span class="p">(</span><span class="n">new_agp_lines</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes a new AGP file incorporating the Blat changes</span>
+<span class="sd">    </span>
+<span class="sd">    :param new_agp_lines: List containing the new AGP lines</span>
+<span class="sd">    :type new_agp_lines: list(list(str))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;scaffolds.agp&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+        <span class="n">last_scaffold</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">last_position</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">last_id</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">new_agp_lines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">last_scaffold</span><span class="p">:</span>
+                <span class="n">last_scaffold</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">last_position</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">last_id</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="n">last_position</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># New end = end - (start - last_pos)</span>
+                <span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">-</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">last_position</span><span class="p">))</span>
+
+                <span class="c1"># New start = last_pos + 1</span>
+                <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">last_position</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">last_id</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">last_position</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">last_scaffold</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">last_id</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="mute_agp_file"><a class="viewcode-back" href="../../Blat.html#biscot.Blat.mute_agp_file">[docs]</a><span class="k">def</span> <span class="nf">mute_agp_file</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads an AGP file and a changes file and modifies the AGP file lines to incorporate the changes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">agp_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_1/phase_1.agp&quot;</span><span class="p">)</span>
+    <span class="n">changes_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/agp_changes.txt&quot;</span><span class="p">)</span>
+
+    <span class="n">changes_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">changes_file</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">changes_dict</span><span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+    <span class="n">changes_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">agp_dict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">agp_file</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">agp_dict</span><span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">agp_dict</span><span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">agp_dict</span><span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+    <span class="n">new_agp_lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Mutating lines with a change</span>
+    <span class="k">for</span> <span class="n">scaffold</span> <span class="ow">in</span> <span class="n">agp_dict</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">agp_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">scaffold</span> <span class="ow">in</span> <span class="n">changes_dict</span><span class="p">:</span>
+                <span class="n">change_found</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="n">changes_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">]:</span>
+                    <span class="c1"># Verify that the position is the same and that we are not examining an &#39;N&#39; line</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">change</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span>
+                        <span class="n">agp_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">6</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;scaffold&quot;</span>
+                    <span class="p">):</span>
+                        <span class="c1"># Change start of next line on scaffold</span>
+                        <span class="n">agp_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                            <span class="nb">int</span><span class="p">(</span><span class="n">agp_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">change</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                        <span class="p">)</span>
+
+                        <span class="c1"># Change start of next line on contig</span>
+                        <span class="n">agp_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                            <span class="nb">int</span><span class="p">(</span><span class="n">agp_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">][</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">6</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">change</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                        <span class="p">)</span>
+
+                        <span class="c1"># Change end of previous line on scaffold</span>
+                        <span class="n">new_agp_lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                            <span class="nb">int</span><span class="p">(</span><span class="n">agp_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">][</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+                            <span class="o">-</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">change</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">change</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                        <span class="p">)</span>
+
+                        <span class="c1"># Change end of previous line on contig</span>
+                        <span class="n">new_agp_lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                            <span class="nb">int</span><span class="p">(</span><span class="n">agp_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">][</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">7</span><span class="p">])</span>
+                            <span class="o">-</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">change</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">change</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                        <span class="p">)</span>
+
+                        <span class="n">change_found</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Removed gap (size: </span><span class="si">{line[5]}</span><span class="s2">) at position </span><span class="si">{line[1]}</span><span class="s2"> on scaffold </span><span class="si">{scaffold}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+                        <span class="k">break</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">change_found</span><span class="p">:</span>
+                    <span class="n">new_agp_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">agp_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_agp_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">agp_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">write_new_agp</span><span class="p">(</span><span class="n">new_agp_lines</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="blat_phase"><a class="viewcode-back" href="../../Blat.html#biscot.Blat.blat_phase">[docs]</a><span class="k">def</span> <span class="nf">blat_phase</span><span class="p">(</span><span class="n">contigs_sequence_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes Blat and modifies an AGP file based on the mappings found</span>
+<span class="sd">    </span>
+<span class="sd">    :param contigs_sequence_dict: Dict containing contigs FASTA sequences</span>
+<span class="sd">    :type contigs_sequence_dict: dict(str: str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">&quot;Phase_2&quot;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Phase_2 directory already created&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_2/agp_changes.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="n">get_agp_changes</span><span class="p">(</span><span class="n">contigs_sequence_dict</span><span class="p">)</span>
+    <span class="n">mute_agp_file</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Istace, Caroline Belser, Jean-Marc Aury
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

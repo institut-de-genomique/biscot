@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Map class &mdash; Bionano Scaffolding Correction Tool (BiSCOT) 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Map-related methods" href="Map_methods.html" />
+    <link rel="prev" title="Map module" href="Map.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Bionano Scaffolding Correction Tool (BiSCOT)
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Alignment.html">Alignment module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Blat.html">Blat module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Key.html">Key file related methods</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="Map.html">Map module</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Map class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Map_methods.html">Map-related methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Misc.html">General methods</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Bionano Scaffolding Correction Tool (BiSCOT)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="Map.html">Map module</a> &raquo;</li>
+        
+      <li>Map class</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Map_class.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="map-class">
+<h1>Map class<a class="headerlink" href="#map-class" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="biscot.Map.Map">
+<em class="property">class </em><code class="sig-prename descclassname">biscot.Map.</code><code class="sig-name descname">Map</code><span class="sig-paren">(</span><em class="sig-param">map_id</em>, <em class="sig-param">labels_1</em>, <em class="sig-param">labels_2</em>, <em class="sig-param">alignments=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Map.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Map.Map" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="biscot.Map.Map.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">map_id</em>, <em class="sig-param">labels_1</em>, <em class="sig-param">labels_2</em>, <em class="sig-param">alignments=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Map.html#Map.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Map.Map.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="biscot.Map.Map.__str__">
+<code class="sig-name descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Map.html#Map.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Map.Map.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="biscot.Map.Map.__weakref__">
+<code class="sig-name descname">__weakref__</code><a class="headerlink" href="#biscot.Map.Map.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="biscot.Map.Map.add_alignment">
+<code class="sig-name descname">add_alignment</code><span class="sig-paren">(</span><em class="sig-param">aln</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Map.html#Map.add_alignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Map.Map.add_alignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an Alignment object to the list of alignments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>aln</strong> (<a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a>) – Alignment to add</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="biscot.Map.Map.add_channel_1_label">
+<code class="sig-name descname">add_channel_1_label</code><span class="sig-paren">(</span><em class="sig-param">label_position</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Map.html#Map.add_channel_1_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Map.Map.add_channel_1_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a label to the list of channel 1 labels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>label_position</strong> (<em>int</em>) – Position of the label on the map</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="biscot.Map.Map.add_channel_2_label">
+<code class="sig-name descname">add_channel_2_label</code><span class="sig-paren">(</span><em class="sig-param">label_position</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Map.html#Map.add_channel_2_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Map.Map.add_channel_2_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a label to the list of channel 2 labels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>label_position</strong> (<em>int</em>) – Position of the label on the map</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="biscot.Map.Map.check_containment">
+<code class="sig-name descname">check_containment</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Map.html#Map.check_containment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Map.Map.check_containment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the list of alignments in search of alignments that could be contained into another one, i.e. reference_start_aln_1 &lt; reference_start_aln_2 and reference_end_aln_1 &gt; reference_end_aln_2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of tuples containing the contained alignment at the second position and the alignment containing it at the first position</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list(tuple(<a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment">Alignment</a>, <a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment">Alignment</a>))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="biscot.Map.Map.get_label_position">
+<code class="sig-name descname">get_label_position</code><span class="sig-paren">(</span><em class="sig-param">label_id</em>, <em class="sig-param">channel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Map.html#Map.get_label_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Map.Map.get_label_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a label position on a map based on its id and channel</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label_id</strong> (<em>integer</em>) – Label id to look for</p></li>
+<li><p><strong>channel</strong> (<em>int</em>) – Enzyme channel of the searched label</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – If the label couldn’t be found</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Searched label position</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="biscot.Map.Map.print_alignments">
+<code class="sig-name descname">print_alignments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Map.html#Map.print_alignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Map.Map.print_alignments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the alignments of a Map object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="biscot.Map.Map.sort_alignments">
+<code class="sig-name descname">sort_alignments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Map.html#Map.sort_alignments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Map.Map.sort_alignments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sorts the list of alignments</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Map_methods.html" class="btn btn-neutral float-right" title="Map-related methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Map.html" class="btn btn-neutral float-left" title="Map module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Istace, Caroline Belser, Jean-Marc Aury
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

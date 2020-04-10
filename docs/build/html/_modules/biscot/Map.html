@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>biscot.Map &mdash; Bionano Scaffolding Correction Tool (BiSCOT) 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Bionano Scaffolding Correction Tool (BiSCOT)
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Alignment.html">Alignment module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Blat.html">Blat module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Key.html">Key file related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Map.html">Map module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Misc.html">General methods</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Bionano Scaffolding Correction Tool (BiSCOT)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>biscot.Map</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for biscot.Map</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">Misc</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+
+<div class="viewcode-block" id="Map"><a class="viewcode-back" href="../../Map_class.html#biscot.Map.Map">[docs]</a><span class="k">class</span> <span class="nc">Map</span><span class="p">:</span>
+<div class="viewcode-block" id="Map.__init__"><a class="viewcode-back" href="../../Map_class.html#biscot.Map.Map.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_id</span><span class="p">,</span> <span class="n">labels_1</span><span class="p">,</span> <span class="n">labels_2</span><span class="p">,</span> <span class="n">alignments</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_id</span> <span class="o">=</span> <span class="n">map_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_1</span> <span class="o">=</span> <span class="n">labels_1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_2</span> <span class="o">=</span> <span class="n">labels_2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_channel_1_labels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels_1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_channel_2_labels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels_2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alignments</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">alignments</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contig_maps</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="Map.add_channel_1_label"><a class="viewcode-back" href="../../Map_class.html#biscot.Map.Map.add_channel_1_label">[docs]</a>    <span class="k">def</span> <span class="nf">add_channel_1_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_position</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a label to the list of channel 1 labels</span>
+<span class="sd">        </span>
+<span class="sd">        :param label_position: Position of the label on the map</span>
+<span class="sd">        :type label_position: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_channel_1_labels</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_1</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_channel_1_labels</span><span class="p">,</span> <span class="n">label_position</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Map.add_channel_2_label"><a class="viewcode-back" href="../../Map_class.html#biscot.Map.Map.add_channel_2_label">[docs]</a>    <span class="k">def</span> <span class="nf">add_channel_2_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_position</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a label to the list of channel 2 labels</span>
+<span class="sd">        </span>
+<span class="sd">        :param label_position: Position of the label on the map</span>
+<span class="sd">        :type label_position: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_channel_2_labels</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_2</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_channel_2_labels</span><span class="p">,</span> <span class="n">label_position</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Map.get_label_position"><a class="viewcode-back" href="../../Map_class.html#biscot.Map.Map.get_label_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_label_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_id</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a label position on a map based on its id and channel</span>
+<span class="sd">        </span>
+<span class="sd">        :param label_id: Label id to look for</span>
+<span class="sd">        :type label_id: integer</span>
+<span class="sd">        :param channel: Enzyme channel of the searched label</span>
+<span class="sd">        :type channel: int</span>
+<span class="sd">        :raises Exception: If the label couldn&#39;t be found</span>
+<span class="sd">        :return: Searched label position</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">channel</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">position</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels_1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">label</span> <span class="o">==</span> <span class="n">label_id</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">position</span>
+        <span class="k">elif</span> <span class="n">channel</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">position</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels_2</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">label</span> <span class="o">==</span> <span class="n">label_id</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">position</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Didn&#39;t find label </span><span class="si">{label_id}</span><span class="s2"> on map </span><span class="si">{self.map_id}</span><span class="s2"> on channel </span><span class="si">{channel}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Map.add_alignment"><a class="viewcode-back" href="../../Map_class.html#biscot.Map.Map.add_alignment">[docs]</a>    <span class="k">def</span> <span class="nf">add_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aln</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds an Alignment object to the list of alignments</span>
+<span class="sd">        </span>
+<span class="sd">        :param aln: Alignment to add</span>
+<span class="sd">        :type aln: Alignment</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">alignments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aln</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contig_maps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Map.sort_alignments"><a class="viewcode-back" href="../../Map_class.html#biscot.Map.Map.sort_alignments">[docs]</a>    <span class="k">def</span> <span class="nf">sort_alignments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sorts the list of alignments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">alignments</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alignments</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">alignment</span><span class="p">:</span> <span class="n">alignment</span><span class="o">.</span><span class="n">reference_start</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Map.check_containment"><a class="viewcode-back" href="../../Map_class.html#biscot.Map.Map.check_containment">[docs]</a>    <span class="k">def</span> <span class="nf">check_containment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parses the list of alignments in search of alignments that could be contained into another one, i.e. reference_start_aln_1 &lt; reference_start_aln_2 and reference_end_aln_1 &gt; reference_end_aln_2</span>
+<span class="sd">        </span>
+<span class="sd">        :return: List of tuples containing the contained alignment at the second position and the alignment containing it at the first position</span>
+<span class="sd">        :rtype: list(tuple(Alignment, Alignment))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">contained_alns</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alignments</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">aln_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alignments</span><span class="p">)):</span>
+                <span class="n">aln_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_start</span> <span class="o">&lt;</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">reference_start</span>
+                    <span class="ow">and</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_end</span> <span class="o">&gt;</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">reference_end</span>
+                <span class="p">):</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Map </span><span class="si">{aln_2.map_id}</span><span class="s2"> (</span><span class="si">{aln_2.reference_start}</span><span class="s2"> -&gt; </span><span class="si">{aln_2.reference_end}</span><span class="s2">) is contained in map </span><span class="si">{aln_1.map_id}</span><span class="s2"> (</span><span class="si">{aln_1.reference_start}</span><span class="s2"> -&gt; </span><span class="si">{aln_1.reference_end}</span><span class="s2">) on anchor </span><span class="si">{aln_1.reference_id}</span><span class="s2"> channel </span><span class="si">{aln_1.channel}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">contained_alns</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">aln_1</span><span class="p">,</span> <span class="n">aln_2</span><span class="p">))</span>
+
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="n">aln_2</span><span class="o">.</span><span class="n">reference_start</span> <span class="o">&lt;</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_start</span>
+                    <span class="ow">and</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">reference_end</span> <span class="o">&gt;</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_end</span>
+                <span class="p">):</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Map </span><span class="si">{aln_1.map_id}</span><span class="s2"> (</span><span class="si">{aln_1.reference_start}</span><span class="s2"> -&gt; </span><span class="si">{aln_1.reference_end}</span><span class="s2">) is contained in map </span><span class="si">{aln_2.map_id}</span><span class="s2"> (</span><span class="si">{aln_2.reference_start}</span><span class="s2"> -&gt; </span><span class="si">{aln_2.reference_end}</span><span class="s2">) on anchor </span><span class="si">{aln_2.reference_id}</span><span class="s2"> channel </span><span class="si">{aln_2.channel}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">contained_alns</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">aln_2</span><span class="p">,</span> <span class="n">aln_1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">contained_alns</span></div>
+
+<div class="viewcode-block" id="Map.print_alignments"><a class="viewcode-back" href="../../Map_class.html#biscot.Map.Map.print_alignments">[docs]</a>    <span class="k">def</span> <span class="nf">print_alignments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the alignments of a Map object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">aln</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">alignments</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">aln</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Map.__str__"><a class="viewcode-back" href="../../Map_class.html#biscot.Map.Map.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self.map_id}</span><span class="se">\t</span><span class="si">{self.nb_channel_1_labels}</span><span class="se">\t</span><span class="si">{self.nb_channel_2_labels}</span><span class="se">\t</span><span class="si">{self.alignments}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">txt</span></div></div>
+
+
+<div class="viewcode-block" id="parse_reference_cmap"><a class="viewcode-back" href="../../Map_methods.html#biscot.Map.parse_reference_cmap">[docs]</a><span class="k">def</span> <span class="nf">parse_reference_cmap</span><span class="p">(</span><span class="n">reference_cmap_file_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses a reference CMAP file to extract anchor labels</span>
+<span class="sd">    </span>
+<span class="sd">    :param reference_cmap_file_path: Path to a CMAP file</span>
+<span class="sd">    :type reference_cmap_file_path: str</span>
+<span class="sd">    :return: Dict containing anchor maps</span>
+<span class="sd">    :rtype: dict(int, Map)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">reference_cmap_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">reference_cmap_file_path</span><span class="p">)</span>
+    <span class="n">reference_maps_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">reference_cmap_file</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">map_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">label_channel</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+            <span class="n">label_position</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">map_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">:</span>
+                <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">map_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">map_id</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+
+            <span class="k">if</span> <span class="n">label_channel</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">map_id</span><span class="p">]</span><span class="o">.</span><span class="n">add_channel_1_label</span><span class="p">(</span><span class="n">label_position</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">label_channel</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">map_id</span><span class="p">]</span><span class="o">.</span><span class="n">add_channel_2_label</span><span class="p">(</span><span class="n">label_position</span><span class="p">)</span>
+    <span class="n">reference_cmap_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">reference_maps_dict</span></div>
+
+
+<div class="viewcode-block" id="parse_contig_cmap"><a class="viewcode-back" href="../../Map_methods.html#biscot.Map.parse_contig_cmap">[docs]</a><span class="k">def</span> <span class="nf">parse_contig_cmap</span><span class="p">(</span><span class="n">cmap_1_path</span><span class="p">,</span> <span class="n">cmap_2_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses one or two contig CMAP files to extract contig labels</span>
+<span class="sd">    </span>
+<span class="sd">    :param cmap_1_path: Path to a CMAP file</span>
+<span class="sd">    :type cmap_1_path: str</span>
+<span class="sd">    :param cmap_2_path: Path to a CMAP file</span>
+<span class="sd">    :type cmap_2_path: str</span>
+<span class="sd">    :return: Dict containing contg maps</span>
+<span class="sd">    :rtype: dict(str: Map)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cmap_1_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">cmap_1_path</span><span class="p">)</span>
+    <span class="n">contigs_map_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">cmap_1_file</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">map_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">label_position</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">map_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">contigs_map_dict</span><span class="p">:</span>
+                <span class="n">contigs_map_dict</span><span class="p">[</span><span class="n">map_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">map_id</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+
+            <span class="n">contigs_map_dict</span><span class="p">[</span><span class="n">map_id</span><span class="p">]</span><span class="o">.</span><span class="n">add_channel_1_label</span><span class="p">(</span><span class="n">label_position</span><span class="p">)</span>
+    <span class="n">cmap_1_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">cmap_2_path</span><span class="p">:</span>
+        <span class="n">cmap_2_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">cmap_2_path</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">cmap_2_file</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="n">map_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">label_position</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="n">map_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">contigs_map_dict</span><span class="p">:</span>
+                    <span class="n">contigs_map_dict</span><span class="p">[</span><span class="n">map_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">map_id</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+
+                <span class="n">contigs_map_dict</span><span class="p">[</span><span class="n">map_id</span><span class="p">]</span><span class="o">.</span><span class="n">add_channel_2_label</span><span class="p">(</span><span class="n">label_position</span><span class="p">)</span>
+        <span class="n">cmap_2_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">contigs_map_dict</span></div>
+
+
+<div class="viewcode-block" id="sort_map_alignments"><a class="viewcode-back" href="../../Map_methods.html#biscot.Map.sort_map_alignments">[docs]</a><span class="k">def</span> <span class="nf">sort_map_alignments</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sorts the alignments of a Map object by reference_start value</span>
+<span class="sd">    </span>
+<span class="sd">    :param reference_maps_dict: Dict containing anchor maps</span>
+<span class="sd">    :type reference_maps_dict: dict(int, Map)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Sorting alignments&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nb">map</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">:</span>
+        <span class="n">reference_maps_dict</span><span class="p">[</span><span class="nb">map</span><span class="p">]</span><span class="o">.</span><span class="n">sort_alignments</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="check_map_containment"><a class="viewcode-back" href="../../Map_methods.html#biscot.Map.check_map_containment">[docs]</a><span class="k">def</span> <span class="nf">check_map_containment</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses all alignments of a map in search of contaned alignments</span>
+<span class="sd">    </span>
+<span class="sd">    :param reference_maps_dict: Dict containing anchor maps</span>
+<span class="sd">    :type reference_maps_dict: dict(int: Map)</span>
+<span class="sd">    :return: A list containing containing contained alignments</span>
+<span class="sd">    :rtype: list(tuple(Alignment, Alignment))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Looking for contained maps&quot;</span><span class="p">)</span>
+    <span class="n">contained_alignments</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">anchor</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">:</span>
+        <span class="n">alns</span> <span class="o">=</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">anchor</span><span class="p">]</span><span class="o">.</span><span class="n">check_containment</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">alns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">contained_alignments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">alns</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">contained_alignments</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Istace, Caroline Belser, Jean-Marc Aury
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

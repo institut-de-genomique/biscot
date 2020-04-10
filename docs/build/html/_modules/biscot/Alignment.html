@@ -1,0 +1,1217 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>biscot.Alignment &mdash; Bionano Scaffolding Correction Tool (BiSCOT) 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Bionano Scaffolding Correction Tool (BiSCOT)
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Alignment.html">Alignment module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Blat.html">Blat module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Key.html">Key file related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Map.html">Map module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Misc.html">General methods</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Bionano Scaffolding Correction Tool (BiSCOT)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>biscot.Alignment</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for biscot.Alignment</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">Key</span>
+<span class="kn">import</span> <span class="nn">Map</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="Alignment"><a class="viewcode-back" href="../../Alignment_class.html#biscot.Alignment.Alignment">[docs]</a><span class="k">class</span> <span class="nc">Alignment</span><span class="p">:</span>
+<div class="viewcode-block" id="Alignment.__init__"><a class="viewcode-back" href="../../Alignment_class.html#biscot.Alignment.Alignment.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">map_id</span><span class="p">,</span>
+        <span class="n">reference_id</span><span class="p">,</span>
+        <span class="n">map_start</span><span class="p">,</span>
+        <span class="n">map_end</span><span class="p">,</span>
+        <span class="n">reference_start</span><span class="p">,</span>
+        <span class="n">reference_end</span><span class="p">,</span>
+        <span class="n">channel</span><span class="p">,</span>
+        <span class="n">orientation</span><span class="p">,</span>
+        <span class="n">alignments</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_id</span> <span class="o">=</span> <span class="n">map_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_start</span> <span class="o">=</span> <span class="n">map_start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_end</span> <span class="o">=</span> <span class="n">map_end</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_id</span> <span class="o">=</span> <span class="n">reference_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_start</span> <span class="o">=</span> <span class="n">reference_start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_end</span> <span class="o">=</span> <span class="n">reference_end</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">channel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">alignments</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Alignment.get_corresponding_contig_map_label"><a class="viewcode-back" href="../../Alignment_class.html#biscot.Alignment.Alignment.get_corresponding_contig_map_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_corresponding_contig_map_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference_label_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extracts a contig map label that was aligned against specified anchor label</span>
+<span class="sd">        </span>
+<span class="sd">        :param reference_label_id: Anchor map label id</span>
+<span class="sd">        :type reference_label_id: int</span>
+<span class="sd">        :return: Contig map label id</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">reference</span><span class="p">,</span> <span class="n">contig</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">alignment</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">reference</span> <span class="o">==</span> <span class="n">reference_label_id</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">contig</span></div>
+
+<div class="viewcode-block" id="Alignment.update_alignments"><a class="viewcode-back" href="../../Alignment_class.html#biscot.Alignment.Alignment.update_alignments">[docs]</a>    <span class="k">def</span> <span class="nf">update_alignments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contig_maps_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parses contig maps and removes alignment when aln.map_start &lt; self.map_start </span>
+<span class="sd">        or aln.map_end &gt; self.map_end</span>
+<span class="sd">        </span>
+<span class="sd">        :param contig_maps_dict: Dict containing contig Map objects</span>
+<span class="sd">        :type contig_maps_dict: dict(int, Map)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">alignments_to_remove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">reference</span><span class="p">,</span> <span class="n">contig</span><span class="p">,</span> <span class="n">channel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">alignment</span><span class="p">:</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="n">contig_maps_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_label_position</span><span class="p">(</span><span class="n">contig</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">position</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_end</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">position</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_end</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_start</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">alignments_to_remove</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">reference</span><span class="p">,</span> <span class="n">contig</span><span class="p">,</span> <span class="n">channel</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">alignment</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">alignments_to_remove</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Alignment.__str__"><a class="viewcode-back" href="../../Alignment_class.html#biscot.Alignment.Alignment.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Text representation of an Alignment object</span>
+<span class="sd">        </span>
+<span class="sd">        :return: String representing the Alignment object</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">txt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference_start</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference_end</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map_start</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map_end</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">txt</span></div></div>
+
+
+<div class="viewcode-block" id="line_to_alignment"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.line_to_alignment">[docs]</a><span class="k">def</span> <span class="nf">line_to_alignment</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts an xmap line to an Alignment object</span>
+<span class="sd">    </span>
+<span class="sd">    :param line: A line of an xmap file</span>
+<span class="sd">    :type line: str</span>
+<span class="sd">    :param channel: Enzyme channel to consider</span>
+<span class="sd">    :type channel: int</span>
+<span class="sd">    :return: An alignment object</span>
+<span class="sd">    :rtype: Alignment</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">map_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">map_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">map_end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">reference_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">reference_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">reference_end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">orientation</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+    <span class="n">alignment</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span>
+
+    <span class="n">alignment</span> <span class="o">=</span> <span class="n">alignment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">alignment_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">label_couples</span> <span class="ow">in</span> <span class="n">alignment</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">label_couples</span> <span class="o">=</span> <span class="n">label_couples</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+        <span class="n">reference</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">label_couples</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">contig</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">label_couples</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">alignment_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">reference</span><span class="p">,</span> <span class="n">contig</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">aln</span> <span class="o">=</span> <span class="n">Alignment</span><span class="p">(</span>
+        <span class="n">map_id</span><span class="p">,</span>
+        <span class="n">reference_id</span><span class="p">,</span>
+        <span class="n">map_start</span><span class="p">,</span>
+        <span class="n">map_end</span><span class="p">,</span>
+        <span class="n">reference_start</span><span class="p">,</span>
+        <span class="n">reference_end</span><span class="p">,</span>
+        <span class="n">channel</span><span class="p">,</span>
+        <span class="n">orientation</span><span class="p">,</span>
+        <span class="n">alignment_list</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">aln</span></div>
+
+
+<div class="viewcode-block" id="parse_xmap"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.parse_xmap">[docs]</a><span class="k">def</span> <span class="nf">parse_xmap</span><span class="p">(</span>
+    <span class="n">reference_maps_dict</span><span class="p">,</span>
+    <span class="n">xmap_1_path</span><span class="p">,</span>
+    <span class="n">xmap_2_path</span><span class="p">,</span>
+    <span class="n">deleted_xmap_records</span><span class="p">,</span>
+    <span class="n">xmap_two_enzymes_path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">only_confirmed_positions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses from one to three xmaps and converts lines to Alignment objects</span>
+<span class="sd">    </span>
+<span class="sd">    :param reference_maps_dict: Dict containing anchor Map obecjts</span>
+<span class="sd">    :type reference_maps_dict: dict(int, Map)</span>
+<span class="sd">    :param xmap_1_path: Path to the first xmap_file</span>
+<span class="sd">    :type xmap_1_path: str</span>
+<span class="sd">    :param xmap_2_path: Path to the second xmap file</span>
+<span class="sd">    :type xmap_2_path: str</span>
+<span class="sd">    :param deleted_xmap_records: Dict containing Alignment objects that were deleted due to a larger alignment being found</span>
+<span class="sd">    :type deleted_xmap_records: dict(int, Alignment)</span>
+<span class="sd">    :param xmap_two_enzymes_path: Path to the 2-enzyme xmap file, defaults to &quot;&quot;</span>
+<span class="sd">    :type xmap_two_enzymes_path: str, optional</span>
+<span class="sd">    :param only_confirmed_positions: If True, only alignments contained in xmap_1 or xmap_2 AND in xmap_2enzymes will be conserved, defaults to False</span>
+<span class="sd">    :type only_confirmed_positions: bool, optional</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">xmap_1_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">xmap_1_path</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">xmap_1_file</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+            <span class="n">aln</span> <span class="o">=</span> <span class="n">line_to_alignment</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">add_alignment</span><span class="p">(</span><span class="n">aln</span><span class="p">)</span>
+    <span class="n">xmap_1_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">xmap_2_path</span><span class="p">:</span>
+        <span class="n">xmap_2_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">xmap_2_path</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">xmap_2_file</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                <span class="n">aln</span> <span class="o">=</span> <span class="n">line_to_alignment</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">aln</span><span class="o">.</span><span class="n">map_id</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">contig_maps</span><span class="p">:</span>
+                    <span class="n">aln_1</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">for</span> <span class="n">alignment</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">aln</span><span class="o">.</span><span class="n">map_id</span> <span class="o">==</span> <span class="n">alignment</span><span class="o">.</span><span class="n">map_id</span><span class="p">:</span>
+                            <span class="n">aln_1</span> <span class="o">=</span> <span class="n">alignment</span>
+
+                    <span class="n">size_aln_1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_start</span> <span class="o">-</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">map_end</span><span class="p">)</span>
+                    <span class="n">size_aln_2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">aln</span><span class="o">.</span><span class="n">map_start</span> <span class="o">-</span> <span class="n">aln</span><span class="o">.</span><span class="n">map_end</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">size_aln_2</span> <span class="o">&gt;</span> <span class="n">size_aln_1</span><span class="p">:</span>
+                        <span class="n">deleted_xmap_records</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">aln_1</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">alignment</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                            <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span>
+                        <span class="p">):</span>
+                            <span class="k">if</span> <span class="n">aln</span><span class="o">.</span><span class="n">map_id</span> <span class="o">==</span> <span class="n">alignment</span><span class="o">.</span><span class="n">map_id</span><span class="p">:</span>
+                                <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span>
+                                    <span class="n">i</span>
+                                <span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">aln</span><span class="p">)</span>
+                                <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">deleted_xmap_records</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">aln</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">add_alignment</span><span class="p">(</span>
+                        <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">aln</span><span class="p">)</span>
+                    <span class="p">)</span>
+        <span class="n">xmap_2_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">xmap_two_enzymes_path</span><span class="p">:</span>
+        <span class="n">xmap_two_enzymes_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">xmap_two_enzymes_path</span><span class="p">)</span>
+        <span class="n">scaffold_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">verified_contigs</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">xmap_two_enzymes_file</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                <span class="n">aln</span> <span class="o">=</span> <span class="n">line_to_alignment</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="n">scaffold_names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">map_id</span>
+                        <span class="o">==</span> <span class="n">aln</span><span class="o">.</span><span class="n">map_id</span>
+                    <span class="p">):</span>
+                        <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span>
+                            <span class="n">i</span>
+                        <span class="p">]</span><span class="o">.</span><span class="n">reference_start</span> <span class="o">=</span> <span class="n">aln</span><span class="o">.</span><span class="n">reference_start</span>
+                        <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span>
+                            <span class="n">i</span>
+                        <span class="p">]</span><span class="o">.</span><span class="n">reference_end</span> <span class="o">=</span> <span class="n">aln</span><span class="o">.</span><span class="n">reference_end</span>
+                        <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span>
+                            <span class="n">i</span>
+                        <span class="p">]</span><span class="o">.</span><span class="n">map_start</span> <span class="o">=</span> <span class="n">aln</span><span class="o">.</span><span class="n">map_start</span>
+                        <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span>
+                            <span class="n">i</span>
+                        <span class="p">]</span><span class="o">.</span><span class="n">map_end</span> <span class="o">=</span> <span class="n">aln</span><span class="o">.</span><span class="n">map_end</span>
+                        <span class="k">break</span>
+
+                <span class="k">if</span> <span class="n">aln</span><span class="o">.</span><span class="n">map_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">contig_maps</span><span class="p">:</span>
+                    <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">add_alignment</span><span class="p">(</span><span class="n">aln</span><span class="p">)</span>
+
+                <span class="n">verified_contigs</span><span class="p">[</span><span class="n">aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">)</span>
+
+        <span class="n">unverified_scaffolds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scaffold_id</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">scaffold_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">scaffold_names</span><span class="p">:</span>
+                <span class="n">unverified_scaffolds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scaffold_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">scaffold_id</span> <span class="ow">in</span> <span class="n">unverified_scaffolds</span><span class="p">:</span>
+            <span class="n">reference_maps_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">scaffold_id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">only_confirmed_positions</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Removing unverified alignments&quot;</span><span class="p">)</span>
+            <span class="n">alignments_to_pop</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">scaffold</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">alignment</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">alignment</span><span class="o">.</span><span class="n">map_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">verified_contigs</span><span class="p">[</span><span class="n">scaffold</span><span class="p">]:</span>
+                        <span class="n">alignments_to_pop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">alignment</span><span class="p">)</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Unverified position - Alignment of map </span><span class="si">{alignment.map_id}</span><span class="s2"> on anchor </span><span class="si">{alignment.reference_id}</span><span class="s2"> will be removed&quot;</span>
+                        <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">scaffold</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">:</span>
+                <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">alignment</span>
+                    <span class="k">for</span> <span class="n">alignment</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">scaffold</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span>
+                    <span class="k">if</span> <span class="n">alignment</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">alignments_to_pop</span>
+                <span class="p">]</span>
+
+        <span class="n">xmap_two_enzymes_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_shared_labels"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.get_shared_labels">[docs]</a><span class="k">def</span> <span class="nf">get_shared_labels</span><span class="p">(</span><span class="n">aln_1</span><span class="p">,</span> <span class="n">aln_2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses two Alignments objects and returns anchor map label ids for which both contig maps are aligned to</span>
+<span class="sd">    </span>
+<span class="sd">    :param aln_1: An alignment object</span>
+<span class="sd">    :type aln_1: Alignment</span>
+<span class="sd">    :param aln_2: An Alignment object</span>
+<span class="sd">    :type aln_2: Alignment</span>
+<span class="sd">    :return: A tuple of lists that contains reference label ids which corresponds to the overlap between aln_1 and aln_2. One list for each channel.</span>
+<span class="sd">    :rtype: tuple(list(int), list(int))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">labels_aln_1</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">set</span><span class="p">()}</span>
+    <span class="n">labels_aln_2</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">set</span><span class="p">()}</span>
+
+    <span class="k">for</span> <span class="n">reference</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">alignment</span><span class="p">:</span>
+        <span class="n">labels_aln_1</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">reference</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">alignment</span><span class="p">:</span>
+        <span class="n">labels_aln_2</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+
+    <span class="n">intersection_channel_1</span> <span class="o">=</span> <span class="n">labels_aln_1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">labels_aln_2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">intersection_channel_2</span> <span class="o">=</span> <span class="n">labels_aln_1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">labels_aln_2</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">intersection_channel_1</span><span class="p">),</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">intersection_channel_2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_leftmost_label"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.get_leftmost_label">[docs]</a><span class="k">def</span> <span class="nf">get_leftmost_label</span><span class="p">(</span><span class="n">label_list</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">reference_map</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts all label positions from a label list ids and reference maps and returns the one that has the minimum position on the anchor</span>
+<span class="sd">    </span>
+<span class="sd">    :param label_list: List of label ids</span>
+<span class="sd">    :type label_list: list(int)</span>
+<span class="sd">    :param channel: Enzyme channel to consider to extract label position</span>
+<span class="sd">    :type channel: int (1 or 2)</span>
+<span class="sd">    :param reference_map: Dict containing anchor Map objects</span>
+<span class="sd">    :type reference_map: dict(integer: Map)</span>
+<span class="sd">    :return: Returns the label id that satisfies label_position = min(all_label_positions)</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">leftmost_label</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">min_pos</span> <span class="o">=</span> <span class="mi">10000000000</span>
+
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">label_list</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">reference_map</span><span class="o">.</span><span class="n">get_label_position</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Didn&#39;t find label </span><span class="si">{label}</span><span class="s2"> channel </span><span class="si">{channel}</span><span class="s2"> on reference map </span><span class="si">{reference_map.map_id}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="n">min_pos</span><span class="p">:</span>
+            <span class="n">leftmost_label</span> <span class="o">=</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+            <span class="n">min_pos</span> <span class="o">=</span> <span class="n">pos</span>
+
+    <span class="k">return</span> <span class="n">leftmost_label</span></div>
+
+
+<div class="viewcode-block" id="get_rightmost_label"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.get_rightmost_label">[docs]</a><span class="k">def</span> <span class="nf">get_rightmost_label</span><span class="p">(</span><span class="n">label_list</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">reference_map</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts all label positions from a label list ids and reference maps and returns the one that has the maximum position on the anchor</span>
+<span class="sd">    </span>
+<span class="sd">    :param label_list: List of label ids</span>
+<span class="sd">    :type label_list: list(int)</span>
+<span class="sd">    :param channel: Enzyme channel to consider to extract label position</span>
+<span class="sd">    :type channel: int (1 or 2)</span>
+<span class="sd">    :param reference_map: Dict containing anchor Map objects</span>
+<span class="sd">    :type reference_map: dict(int, Map)</span>
+<span class="sd">    :return: Returns the label id that satisfies label_position = max(all_label_positions)</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rightmost_label</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">max_pos</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">label_list</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">reference_map</span><span class="o">.</span><span class="n">get_label_position</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Didn&#39;t find label </span><span class="si">{label}</span><span class="s2"> channel </span><span class="si">{channel}</span><span class="s2"> on reference map </span><span class="si">{reference_map.map_id}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">&gt;</span> <span class="n">max_pos</span><span class="p">:</span>
+            <span class="n">rightmost_label</span> <span class="o">=</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+            <span class="n">max_pos</span> <span class="o">=</span> <span class="n">pos</span>
+
+    <span class="k">return</span> <span class="n">rightmost_label</span></div>
+
+
+<div class="viewcode-block" id="solve_containment"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.solve_containment">[docs]</a><span class="k">def</span> <span class="nf">solve_containment</span><span class="p">(</span><span class="n">aln_couple</span><span class="p">,</span> <span class="n">reference_maps_dict</span><span class="p">,</span> <span class="n">contig_maps_dict</span><span class="p">,</span> <span class="n">key_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    |  Tries to integrate a small map into a larger one.</span>
+<span class="sd">    |  Let&#39;s consider a Map 1 that is aligned on the reference from position 1 to 100 and a Map 2 that is aligned on the reference from position 25 to 75.</span>
+<span class="sd">    |  The goal of this function is to break alignment of Map 1 into two alignments (1-25 and 75-100).</span>
+<span class="sd">    </span>
+<span class="sd">    :param aln_couple: Two Alignment objects. The first one being the &#39;small alignment&#39; and the second, the &#39;large alignment&#39;</span>
+<span class="sd">    :type aln_couple: tuple(Alignment, Alignment)</span>
+<span class="sd">    :param reference_maps_dict: Dict of anchor Map objects</span>
+<span class="sd">    :type reference_maps_dict: dict(int, Map)</span>
+<span class="sd">    :param contig_maps_dict: Dict of contig Map objects</span>
+<span class="sd">    :type contig_maps_dict: dict(int, Map)</span>
+<span class="sd">    :param key_dict: Dict containing the correspondance between Map objects and actual sequences</span>
+<span class="sd">    :type key_dict: dict((int, int, int), (str, int, int, int))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">large_aln</span> <span class="o">=</span> <span class="n">aln_couple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">short_aln</span> <span class="o">=</span> <span class="n">aln_couple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_start</span> <span class="o">-</span> <span class="mi">10000</span> <span class="o">&lt;</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_start</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="n">short_aln</span><span class="o">.</span><span class="n">reference_end</span> <span class="o">+</span> <span class="mi">10000</span> <span class="o">&gt;</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_end</span>
+    <span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Map </span><span class="si">{short_aln.map_id}</span><span class="s2"> is contained at the extremities of map </span><span class="si">{large_aln.map_id}</span><span class="s2"> (Anchor </span><span class="si">{short_aln.reference_id}</span><span class="s2">), removing alignment of map </span><span class="si">{short_aln.map_id}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">short_aln</span><span class="p">:</span>
+                <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="k">break</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">intersection</span> <span class="o">=</span> <span class="n">get_shared_labels</span><span class="p">(</span><span class="n">short_aln</span><span class="p">,</span> <span class="n">large_aln</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">intersection</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">intersection</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Not enough shared labels to integrate map </span><span class="si">{short_aln.map_id}</span><span class="s2"> in map </span><span class="si">{large_aln.map_id}</span><span class="s2">, removing alignment of map </span><span class="si">{short_aln.map_id}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span>
+                <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="o">==</span> <span class="n">short_aln</span>
+                <span class="p">):</span>
+                    <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">break</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">label_1_start</span> <span class="o">=</span> <span class="n">get_leftmost_label</span><span class="p">(</span>
+                <span class="n">intersection</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">label_2_start</span> <span class="o">=</span> <span class="n">get_leftmost_label</span><span class="p">(</span>
+                <span class="n">intersection</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">label_1_end</span> <span class="o">=</span> <span class="n">get_rightmost_label</span><span class="p">(</span>
+                <span class="n">intersection</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">label_2_end</span> <span class="o">=</span> <span class="n">get_rightmost_label</span><span class="p">(</span>
+                <span class="n">intersection</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="n">label_1_start</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">label_1_end</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">label_2_start</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">label_2_end</span>
+            <span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Couldn&#39;t find label boundaries for alignment of map </span><span class="si">{short_aln.map_id}</span><span class="s2"> contained in map </span><span class="si">{large_aln.map_id}</span><span class="s2"> on anchor </span><span class="si">{short_aln.reference_id}</span><span class="s2">, removing alignment of map </span><span class="si">{short_aln.map_id}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span>
+                    <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">)</span>
+                <span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="o">==</span> <span class="n">short_aln</span>
+                    <span class="p">):</span>
+                        <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                        <span class="k">break</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">contig_map_label_start_containment</span><span class="p">,</span> <span class="n">contig_map_label_end_containment</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="kc">None</span><span class="p">,</span>
+                    <span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">label_1_start</span> <span class="ow">and</span> <span class="n">label_1_end</span><span class="p">:</span>
+                    <span class="n">contig_map_label_start_containment</span> <span class="o">=</span> <span class="n">contig_maps_dict</span><span class="p">[</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span>
+                    <span class="p">]</span><span class="o">.</span><span class="n">get_label_position</span><span class="p">(</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">get_corresponding_contig_map_label</span><span class="p">(</span><span class="n">label_1_start</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">contig_map_label_end_containment</span> <span class="o">=</span> <span class="n">contig_maps_dict</span><span class="p">[</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span>
+                    <span class="p">]</span><span class="o">.</span><span class="n">get_label_position</span><span class="p">(</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">get_corresponding_contig_map_label</span><span class="p">(</span><span class="n">label_1_end</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="n">label_2_start</span> <span class="ow">and</span> <span class="n">label_2_end</span><span class="p">:</span>
+                    <span class="n">contig_map_label_start_containment</span> <span class="o">=</span> <span class="n">contig_maps_dict</span><span class="p">[</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span>
+                    <span class="p">]</span><span class="o">.</span><span class="n">get_label_position</span><span class="p">(</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">get_corresponding_contig_map_label</span><span class="p">(</span><span class="n">label_2_start</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">contig_map_label_end_containment</span> <span class="o">=</span> <span class="n">contig_maps_dict</span><span class="p">[</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span>
+                    <span class="p">]</span><span class="o">.</span><span class="n">get_label_position</span><span class="p">(</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">get_corresponding_contig_map_label</span><span class="p">(</span><span class="n">label_2_end</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                        <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Couldn&#39;t integrate map </span><span class="si">{short_aln.map_id}</span><span class="s2"> into </span><span class="si">{large_aln.map_id}</span><span class="s2"> (Anchor </span><span class="si">{large_aln.reference_id}</span><span class="s2">)because they don&#39;t share enough labels. Removing alignment of map </span><span class="si">{short_aln.map_id}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span>
+                        <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">)</span>
+                    <span class="p">):</span>
+                        <span class="k">if</span> <span class="p">(</span>
+                            <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                            <span class="o">==</span> <span class="n">short_aln</span>
+                        <span class="p">):</span>
+                            <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
+                                <span class="n">i</span>
+                            <span class="p">)</span>
+                            <span class="k">break</span>
+                    <span class="k">return</span>
+
+                <span class="n">new_id</span> <span class="o">=</span> <span class="n">Key</span><span class="o">.</span><span class="n">get_max_id</span><span class="p">(</span><span class="n">key_dict</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Map </span><span class="si">{large_aln.map_id}</span><span class="s2"> on contig </span><span class="si">{key_dict[(large_aln.map_id, large_aln.channel, large_aln.reference_id)][0]}</span><span class="s2"> will be broken in two maps.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Map </span><span class="si">{large_aln.map_id}</span><span class="s2"> before change: </span><span class="si">{large_aln.reference_start}</span><span class="s2"> -&gt; </span><span class="si">{large_aln.reference_end}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+                <span class="n">new_map_start</span><span class="p">,</span> <span class="n">new_map_end</span><span class="p">,</span> <span class="n">new_map_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+                <span class="n">old_map_start</span><span class="p">,</span> <span class="n">old_map_end</span><span class="p">,</span> <span class="n">old_map_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+                <span class="n">new_aln_start</span><span class="p">,</span> <span class="n">new_aln_end</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+                    <span class="n">new_map_start</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">key_dict</span><span class="p">[</span>
+                            <span class="p">(</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="n">contig_map_label_end_containment</span>
+                    <span class="p">)</span>
+                    <span class="n">new_map_end</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[</span>
+                        <span class="p">(</span><span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)</span>
+                    <span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">new_map_size</span> <span class="o">=</span> <span class="n">new_map_end</span> <span class="o">-</span> <span class="n">new_map_start</span>
+                    <span class="n">old_map_start</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[</span>
+                        <span class="p">(</span><span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)</span>
+                    <span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">old_map_end</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">key_dict</span><span class="p">[</span>
+                            <span class="p">(</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="n">contig_map_label_start_containment</span>
+                    <span class="p">)</span>
+                    <span class="n">new_aln_start</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">new_aln_end</span> <span class="o">=</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">map_end</span> <span class="o">-</span> <span class="n">contig_map_label_end_containment</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_map_start</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[</span>
+                        <span class="p">(</span><span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)</span>
+                    <span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">new_map_end</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">key_dict</span><span class="p">[</span>
+                            <span class="p">(</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="n">contig_map_label_end_containment</span>
+                    <span class="p">)</span>
+                    <span class="n">old_map_start</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">key_dict</span><span class="p">[</span>
+                            <span class="p">(</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+                                <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="n">contig_map_label_start_containment</span>
+                    <span class="p">)</span>
+                    <span class="n">old_map_end</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[</span>
+                        <span class="p">(</span><span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)</span>
+                    <span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">new_aln_end</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">new_aln_start</span> <span class="o">=</span> <span class="n">contig_map_label_end_containment</span>
+                <span class="n">new_map_size</span> <span class="o">=</span> <span class="n">new_map_end</span> <span class="o">-</span> <span class="n">new_map_start</span>
+                <span class="n">old_map_size</span> <span class="o">=</span> <span class="n">old_map_end</span> <span class="o">-</span> <span class="n">old_map_start</span>
+
+                <span class="n">key_dict</span><span class="p">[(</span><span class="n">new_id</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">key_dict</span><span class="p">[</span>
+                        <span class="p">(</span><span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)</span>
+                    <span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">new_map_start</span><span class="p">,</span>
+                    <span class="n">new_map_end</span><span class="p">,</span>
+                    <span class="n">new_map_size</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">key_dict</span><span class="p">[</span>
+                    <span class="p">(</span><span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">key_dict</span><span class="p">[</span>
+                        <span class="p">(</span><span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)</span>
+                    <span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">old_map_start</span><span class="p">,</span>
+                    <span class="n">old_map_end</span><span class="p">,</span>
+                    <span class="n">old_map_size</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="n">contig_maps_dict</span><span class="p">[</span><span class="n">new_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span>
+                    <span class="n">new_id</span><span class="p">,</span>
+                    <span class="n">contig_maps_dict</span><span class="p">[</span><span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span><span class="o">.</span><span class="n">labels_1</span><span class="p">,</span>
+                    <span class="n">contig_maps_dict</span><span class="p">[</span><span class="n">large_aln</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span><span class="o">.</span><span class="n">labels_2</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="n">new_aln</span> <span class="o">=</span> <span class="n">Alignment</span><span class="p">(</span>
+                    <span class="n">new_id</span><span class="p">,</span>
+                    <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span>
+                    <span class="n">new_aln_start</span><span class="p">,</span>
+                    <span class="n">new_aln_end</span><span class="p">,</span>
+                    <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">short_aln</span><span class="o">.</span><span class="n">reference_end</span><span class="p">),</span>
+                    <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">large_aln</span><span class="o">.</span><span class="n">reference_end</span><span class="p">),</span>
+                    <span class="n">large_aln</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+                    <span class="n">large_aln</span><span class="o">.</span><span class="n">orientation</span><span class="p">,</span>
+                    <span class="n">large_aln</span><span class="o">.</span><span class="n">alignment</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">large_aln</span><span class="o">.</span><span class="n">reference_id</span><span class="p">]</span><span class="o">.</span><span class="n">add_alignment</span><span class="p">(</span><span class="n">new_aln</span><span class="p">)</span>
+                <span class="n">new_aln</span><span class="o">.</span><span class="n">update_alignments</span><span class="p">(</span><span class="n">contig_maps_dict</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">label_1_start</span> <span class="ow">and</span> <span class="n">label_1_end</span><span class="p">:</span>
+                    <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_end</span> <span class="o">=</span> <span class="n">label_1_start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">label_2_start</span> <span class="ow">and</span> <span class="n">label_2_end</span><span class="p">:</span>
+                    <span class="n">large_aln</span><span class="o">.</span><span class="n">reference_end</span> <span class="o">=</span> <span class="n">label_2_start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">large_aln</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+                    <span class="n">large_aln</span><span class="o">.</span><span class="n">map_end</span> <span class="o">=</span> <span class="n">contig_map_label_start_containment</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">large_aln</span><span class="o">.</span><span class="n">map_end</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">large_aln</span><span class="o">.</span><span class="n">map_start</span> <span class="o">-=</span> <span class="n">contig_map_label_start_containment</span>
+                <span class="n">large_aln</span><span class="o">.</span><span class="n">update_alignments</span><span class="p">(</span><span class="n">contig_maps_dict</span><span class="p">)</span>
+
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Map </span><span class="si">{large_aln.map_id}</span><span class="s2"> after change: </span><span class="si">{large_aln.reference_start}</span><span class="s2"> -&gt; </span><span class="si">{large_aln.reference_end}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Map </span><span class="si">{short_aln.map_id}</span><span class="s2">: </span><span class="si">{short_aln.reference_start}</span><span class="s2"> -&gt; </span><span class="si">{short_aln.reference_end}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Map </span><span class="si">{new_aln.map_id}</span><span class="s2">: </span><span class="si">{new_aln.reference_start}</span><span class="s2"> -&gt; </span><span class="si">{new_aln.reference_end}</span><span class="s2">&quot;</span>
+                <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="print_agp_line_with_intersection"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.print_agp_line_with_intersection">[docs]</a><span class="k">def</span> <span class="nf">print_agp_line_with_intersection</span><span class="p">(</span>
+    <span class="n">aln_1</span><span class="p">,</span>
+    <span class="n">aln_2</span><span class="p">,</span>
+    <span class="n">previous_ref_end</span><span class="p">,</span>
+    <span class="n">previously_scaffolded_maps</span><span class="p">,</span>
+    <span class="n">contigs_map_dict</span><span class="p">,</span>
+    <span class="n">previous_part_number</span><span class="p">,</span>
+    <span class="n">key_dict</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints a line formatted by following the AGP2 standard. Used when two contig maps share labels.</span>
+<span class="sd">    </span>
+<span class="sd">    :param aln_1: Alignment that has the smallest reference_start</span>
+<span class="sd">    :type aln_1: Alignment</span>
+<span class="sd">    :param aln_2: Alignment that has the highest reference_start</span>
+<span class="sd">    :type aln_2: Alignment</span>
+<span class="sd">    :param previous_ref_end: Current position in the scaffold that is being built</span>
+<span class="sd">    :type previous_ref_end: int</span>
+<span class="sd">    :param previously_scaffolded_maps: Contig map ids that were previously used to build the current scaffold</span>
+<span class="sd">    :type previously_scaffolded_maps: list(int)</span>
+<span class="sd">    :param contigs_map_dict: Dict containing contig maps</span>
+<span class="sd">    :type contigs_map_dict: dict(int, Map)</span>
+<span class="sd">    :param previous_part_number: Id of the previous line</span>
+<span class="sd">    :type previous_part_number: int</span>
+<span class="sd">    :param key_dict: Dict containing the correspondance between contigs and contig maps</span>
+<span class="sd">    :type key_dict: dict((int, int, int), (str, int, int, int))</span>
+<span class="sd">    :return: Current position in the scaffold after applying the changes</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">intersection</span> <span class="o">=</span> <span class="n">get_shared_labels</span><span class="p">(</span><span class="n">aln_1</span><span class="p">,</span> <span class="n">aln_2</span><span class="p">)</span>
+    <span class="n">label_1</span><span class="p">,</span> <span class="n">label_2</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="n">label_1_pos</span><span class="p">,</span> <span class="n">label_2_pos</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">intersection</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">intersection</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">label_1</span> <span class="o">=</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">get_corresponding_contig_map_label</span><span class="p">(</span>
+                <span class="n">intersection</span><span class="p">[</span><span class="n">aln_1</span><span class="o">.</span><span class="n">channel</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">label_1_pos</span> <span class="o">=</span> <span class="n">contigs_map_dict</span><span class="p">[</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_label_position</span><span class="p">(</span>
+                <span class="n">label_1</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">channel</span>
+            <span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Couldn&#39;t find label_1 on map </span><span class="si">{aln_1.map_id}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">label_2</span> <span class="o">=</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">get_corresponding_contig_map_label</span><span class="p">(</span>
+                <span class="n">intersection</span><span class="p">[</span><span class="n">aln_2</span><span class="o">.</span><span class="n">channel</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">label_2_pos</span> <span class="o">=</span> <span class="n">contigs_map_dict</span><span class="p">[</span><span class="n">aln_2</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_label_position</span><span class="p">(</span>
+                <span class="n">label_2</span><span class="p">,</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">channel</span>
+            <span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Couldn&#39;t find label_2 on map </span><span class="si">{aln_2.map_id}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">label_1_pos</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">label_2_pos</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Couldn&#39;t detect the position of shared labels between maps </span><span class="si">{aln_1.map_id}</span><span class="s2"> and </span><span class="si">{aln_2.map_id}</span><span class="s2"> on anchor </span><span class="si">{aln_1.reference_id}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="n">intersection</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">intersection</span><span class="p">:</span>
+            <span class="n">start_map_1</span><span class="p">,</span> <span class="n">start_map_2</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="n">end_map_1</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="c1"># First contig map we encounter</span>
+            <span class="k">if</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">previously_scaffolded_maps</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+                    <span class="n">start_map_1</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[</span>
+                        <span class="p">(</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)</span>
+                    <span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">start_map_1</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[</span>
+                        <span class="p">(</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)</span>
+                    <span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">start_map_1</span> <span class="o">=</span> <span class="n">previously_scaffolded_maps</span><span class="p">[</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">end_map_1</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">label_1_pos</span>
+                <span class="o">+</span> <span class="n">key_dict</span><span class="p">[(</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">start_map_2</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">label_2_pos</span>
+                <span class="o">+</span> <span class="n">key_dict</span><span class="p">[(</span><span class="n">aln_2</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">start_map_1</span> <span class="o">!=</span> <span class="n">end_map_1</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_1/phase_1.agp&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+                    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Super-Scaffold_</span><span class="si">{aln_1.reference_id}</span><span class="se">\t</span><span class="s2">{int(previous_ref_end)}</span><span class="se">\t</span><span class="s2">{int(previous_ref_end + math.fabs(end_map_1 - start_map_1))}</span><span class="se">\t</span><span class="s2">{previous_part_number + 1}</span><span class="se">\t</span><span class="s2">W</span><span class="se">\t</span><span class="si">{key_dict[(aln_1.map_id, aln_1.channel, aln_1.reference_id)][0]}</span><span class="se">\t</span><span class="s2">{min(start_map_1, end_map_1)}</span><span class="se">\t</span><span class="s2">{max(end_map_1, start_map_1)}</span><span class="se">\t</span><span class="si">{aln_1.orientation}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+                <span class="n">previously_scaffolded_maps</span><span class="p">[</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_map_1</span><span class="p">,</span> <span class="n">end_map_1</span><span class="p">)</span>
+                <span class="n">previously_scaffolded_maps</span><span class="p">[</span><span class="n">aln_2</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_map_2</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">previous_ref_end</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">previous_ref_end</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">end_map_1</span> <span class="o">-</span> <span class="n">start_map_1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="p">)</span>
+                <span class="n">previous_part_number</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">intersection</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">previous_ref_end</span><span class="p">,</span> <span class="n">intersection</span><span class="p">,</span> <span class="n">previous_part_number</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="print_gap_line"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.print_gap_line">[docs]</a><span class="k">def</span> <span class="nf">print_gap_line</span><span class="p">(</span>
+    <span class="n">aln_1</span><span class="p">,</span> <span class="n">aln_2</span><span class="p">,</span> <span class="n">reference_id</span><span class="p">,</span> <span class="n">previous_reference_end</span><span class="p">,</span> <span class="n">previous_part_number</span><span class="p">,</span> <span class="n">key_dict</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints an AGP line, formatted following the AGP2 standard. Used to print an &#39;N&#39; line.</span>
+<span class="sd">    </span>
+<span class="sd">    :param aln_1: Alignment that has the smallest reference_start</span>
+<span class="sd">    :type aln_1: Alignment</span>
+<span class="sd">    :param aln_2: Alignment that has the highest reference_start</span>
+<span class="sd">    :type aln_2: Alignment</span>
+<span class="sd">    :param reference_id: Id of the anchor map</span>
+<span class="sd">    :type reference_id: int</span>
+<span class="sd">    :param previous_reference_end: Current position in the scaffold being built</span>
+<span class="sd">    :type previous_reference_end: int</span>
+<span class="sd">    :param previous_part_number: Current AGP line id</span>
+<span class="sd">    :type previous_part_number: int</span>
+<span class="sd">    :param key_dict: Dict containing the correspondance between contigs and contig maps</span>
+<span class="sd">    :type key_dict: dict((int, int, int), (str, int, int, int))</span>
+<span class="sd">    :return: Current position in the scaffold being built after applying changes</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">gapsize</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">delta_1</span><span class="p">,</span> <span class="n">delta_2</span><span class="p">,</span> <span class="n">space_between_contigs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+        <span class="n">delta_1</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">key_dict</span><span class="p">[(</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)][</span><span class="mi">3</span><span class="p">]</span>
+            <span class="o">-</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">map_end</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">delta_1</span> <span class="o">=</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">map_end</span>
+
+    <span class="k">if</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+        <span class="n">delta_2</span> <span class="o">=</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">map_start</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">delta_2</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">key_dict</span><span class="p">[(</span><span class="n">aln_2</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)][</span><span class="mi">3</span><span class="p">]</span>
+            <span class="o">-</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">map_start</span>
+        <span class="p">)</span>
+
+    <span class="n">space_between_contigs</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">aln_2</span><span class="o">.</span><span class="n">reference_start</span> <span class="o">-</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_end</span><span class="p">)</span> <span class="o">-</span> <span class="n">delta_1</span> <span class="o">-</span> <span class="n">delta_2</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">space_between_contigs</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="n">gapsize</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gapsize</span> <span class="o">=</span> <span class="n">space_between_contigs</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_1/phase_1.agp&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Super-Scaffold_</span><span class="si">{reference_id}</span><span class="se">\t</span><span class="s2">{int(previous_reference_end)}</span><span class="se">\t</span><span class="s2">{int(previous_reference_end + gapsize - 1)}</span><span class="se">\t</span><span class="s2">{previous_part_number + 1}</span><span class="se">\t</span><span class="s2">N</span><span class="se">\t</span><span class="si">{gapsize}</span><span class="se">\t</span><span class="s2">scaffold</span><span class="se">\t</span><span class="s2">yes</span><span class="se">\t</span><span class="s2">map</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">previous_reference_end</span> <span class="o">+</span> <span class="n">gapsize</span><span class="p">,</span> <span class="n">previous_part_number</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="print_agp_line_no_intersection"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.print_agp_line_no_intersection">[docs]</a><span class="k">def</span> <span class="nf">print_agp_line_no_intersection</span><span class="p">(</span>
+    <span class="n">aln_1</span><span class="p">,</span>
+    <span class="n">aln_2</span><span class="p">,</span>
+    <span class="n">previous_ref_end</span><span class="p">,</span>
+    <span class="n">previously_scaffolded_maps</span><span class="p">,</span>
+    <span class="n">key_dict</span><span class="p">,</span>
+    <span class="n">previous_part_number</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints an AGP line, formatted following the AGP2 standard. Used when two contig maps don&#39;t share anchor labels.</span>
+<span class="sd">    </span>
+<span class="sd">    :param aln_1: Alignment that has the smallest reference_start</span>
+<span class="sd">    :type aln_1: Alignment</span>
+<span class="sd">    :param aln_2: Alignment that has the highest reference_start</span>
+<span class="sd">    :type aln_2: Alignment</span>
+<span class="sd">    :param previous_ref_end: Current position in the scaffold being built</span>
+<span class="sd">    :type previous_ref_end: int</span>
+<span class="sd">    :param previously_scaffolded_maps: Contig map ids that were previously used to build the current scaffold</span>
+<span class="sd">    :type previously_scaffolded_maps: list(int)</span>
+<span class="sd">    :param key_dict: Dict containing the correspondance between contigs and contig maps</span>
+<span class="sd">    :type key_dict: dict((int, int, int), (str, int, int, int))</span>
+<span class="sd">    :param previous_part_number: Current AGP line id</span>
+<span class="sd">    :type previous_part_number: int</span>
+<span class="sd">    :return: Current position in the scaffold being build after applying the changes</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">start_map_1</span><span class="p">,</span> <span class="n">start_map_2</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="n">end_map_1</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">previously_scaffolded_maps</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+            <span class="n">start_map_1</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[(</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start_map_1</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[(</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)][</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">start_map_1</span> <span class="o">=</span> <span class="n">previously_scaffolded_maps</span><span class="p">[</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+        <span class="n">end_map_1</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[(</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)][</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">end_map_1</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[(</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">aln_2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+            <span class="n">start_map_2</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[(</span><span class="n">aln_2</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start_map_2</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[(</span><span class="n">aln_2</span><span class="o">.</span><span class="n">map_id</span><span class="p">,</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">reference_id</span><span class="p">)][</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">previously_scaffolded_maps</span><span class="p">[</span><span class="n">aln_2</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_map_2</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_1/phase_1.agp&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Super-Scaffold_</span><span class="si">{aln_1.reference_id}</span><span class="se">\t</span><span class="s2">{int(previous_ref_end)}</span><span class="se">\t</span><span class="s2">{int(previous_ref_end + math.fabs(end_map_1 - start_map_1))}</span><span class="se">\t</span><span class="s2">{previous_part_number + 1}</span><span class="se">\t</span><span class="s2">W</span><span class="se">\t</span><span class="si">{key_dict[(aln_1.map_id, aln_1.channel, aln_1.reference_id)][0]}</span><span class="se">\t</span><span class="s2">{min(start_map_1, end_map_1)}</span><span class="se">\t</span><span class="s2">{max(end_map_1, start_map_1)}</span><span class="se">\t</span><span class="si">{aln_1.orientation}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">previous_ref_end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">previous_ref_end</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">end_map_1</span> <span class="o">-</span> <span class="n">start_map_1</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">previous_part_number</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">aln_2</span><span class="p">:</span>
+        <span class="n">previous_ref_end</span><span class="p">,</span> <span class="n">previous_part_number</span> <span class="o">=</span> <span class="n">print_gap_line</span><span class="p">(</span>
+            <span class="n">aln_1</span><span class="p">,</span>
+            <span class="n">aln_2</span><span class="p">,</span>
+            <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_id</span><span class="p">,</span>
+            <span class="n">previous_ref_end</span><span class="p">,</span>
+            <span class="n">previous_part_number</span><span class="p">,</span>
+            <span class="n">key_dict</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">previously_scaffolded_maps</span><span class="p">[</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_map_1</span><span class="p">,</span> <span class="n">end_map_1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">previous_ref_end</span><span class="p">,</span> <span class="n">previous_part_number</span></div>
+
+
+<div class="viewcode-block" id="print_agp"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.print_agp">[docs]</a><span class="k">def</span> <span class="nf">print_agp</span><span class="p">(</span>
+    <span class="n">reference_maps_dict</span><span class="p">,</span> <span class="n">key_dict</span><span class="p">,</span> <span class="n">deleted_xmap_records</span><span class="p">,</span> <span class="n">contigs_map_dict</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Searches for shared labels between two Alignment objects and calls the correct function </span>
+<span class="sd">    </span>
+<span class="sd">    :param reference_maps_dict: Dict containing anchor maps</span>
+<span class="sd">    :type reference_maps_dict: dict(int, Map)</span>
+<span class="sd">    :param key_dict: Dict containing the correspondance between contigs and contig maps</span>
+<span class="sd">    :type key_dict: dict((int, int, int): (str, int, int, int))</span>
+<span class="sd">    :param deleted_xmap_records: Dict containing smaller alignments that weren&#39;t retained when parsing xmaps</span>
+<span class="sd">    :type deleted_xmap_records: dict(integer: Alignment)</span>
+<span class="sd">    :param contigs_map_dict: Dict containing contig maps</span>
+<span class="sd">    :type contigs_map_dict: dict(int, Map)</span>
+<span class="sd">    :return: List containing contig maps that were used to build current scaffold</span>
+<span class="sd">    :rtype: list(int)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_1/phase_1.agp&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">scaffolded_maps</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">reference_map_id</span> <span class="ow">in</span> <span class="n">reference_maps_dict</span><span class="p">:</span>
+        <span class="n">previous_ref_end</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">previously_scaffolded_maps</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">previous_part_number</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">intersection</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">aln_1</span><span class="p">,</span> <span class="n">aln_2</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">reference_map_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">aln_1</span> <span class="o">=</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">reference_map_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">aln_2</span> <span class="o">=</span> <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">reference_map_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">same_channel_alignments_found</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">channel</span> <span class="o">!=</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">channel</span><span class="p">:</span>
+                <span class="n">aln_1_change_gap</span> <span class="o">=</span> <span class="mi">1000000000000</span>
+                <span class="n">aln_2_change_gap</span> <span class="o">=</span> <span class="mi">1000000000000</span>
+                <span class="k">if</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span> <span class="ow">in</span> <span class="n">deleted_xmap_records</span><span class="p">:</span>
+                    <span class="n">aln_1_change_gap</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">aln_2</span><span class="o">.</span><span class="n">reference_start</span>
+                        <span class="o">-</span> <span class="n">deleted_xmap_records</span><span class="p">[</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span><span class="o">.</span><span class="n">reference_end</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">map_id</span> <span class="ow">in</span> <span class="n">deleted_xmap_records</span><span class="p">:</span>
+                    <span class="n">aln_2_change_gap</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">deleted_xmap_records</span><span class="p">[</span><span class="n">aln_2</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span><span class="o">.</span><span class="n">reference_start</span>
+                        <span class="o">-</span> <span class="n">aln_1</span><span class="o">.</span><span class="n">reference_end</span>
+                    <span class="p">)</span>
+
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">deleted_xmap_records</span>
+                    <span class="ow">and</span> <span class="n">aln_2</span><span class="o">.</span><span class="n">map_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">deleted_xmap_records</span>
+                <span class="p">):</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Couldn&#39;t find alignment of map </span><span class="si">{aln_1.map_id}</span><span class="s2"> and </span><span class="si">{aln_2.map_id}</span><span class="s2"> on the same channel&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">same_channel_alignments_found</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">aln_1_change_gap</span> <span class="o">&lt;=</span> <span class="n">aln_2_change_gap</span><span class="p">:</span>
+                        <span class="n">aln_1</span> <span class="o">=</span> <span class="n">deleted_xmap_records</span><span class="p">[</span><span class="n">aln_1</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">aln_2</span> <span class="o">=</span> <span class="n">deleted_xmap_records</span><span class="p">[</span><span class="n">aln_2</span><span class="o">.</span><span class="n">map_id</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">same_channel_alignments_found</span><span class="p">:</span>
+                <span class="p">(</span>
+                    <span class="n">previous_ref_end</span><span class="p">,</span>
+                    <span class="n">intersection</span><span class="p">,</span>
+                    <span class="n">previous_part_number</span><span class="p">,</span>
+                <span class="p">)</span> <span class="o">=</span> <span class="n">print_agp_line_with_intersection</span><span class="p">(</span>
+                    <span class="n">aln_1</span><span class="p">,</span>
+                    <span class="n">aln_2</span><span class="p">,</span>
+                    <span class="n">previous_ref_end</span><span class="p">,</span>
+                    <span class="n">previously_scaffolded_maps</span><span class="p">,</span>
+                    <span class="n">contigs_map_dict</span><span class="p">,</span>
+                    <span class="n">previous_part_number</span><span class="p">,</span>
+                    <span class="n">key_dict</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">same_channel_alignments_found</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">intersection</span><span class="p">:</span>
+                <span class="n">previous_ref_end</span><span class="p">,</span> <span class="n">previous_part_number</span> <span class="o">=</span> <span class="n">print_agp_line_no_intersection</span><span class="p">(</span>
+                    <span class="n">aln_1</span><span class="p">,</span>
+                    <span class="n">aln_2</span><span class="p">,</span>
+                    <span class="n">previous_ref_end</span><span class="p">,</span>
+                    <span class="n">previously_scaffolded_maps</span><span class="p">,</span>
+                    <span class="n">key_dict</span><span class="p">,</span>
+                    <span class="n">previous_part_number</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">reference_map_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">print_agp_line_no_intersection</span><span class="p">(</span>
+                <span class="n">aln_2</span><span class="p">,</span>
+                <span class="kc">None</span><span class="p">,</span>
+                <span class="n">previous_ref_end</span><span class="p">,</span>
+                <span class="n">previously_scaffolded_maps</span><span class="p">,</span>
+                <span class="n">key_dict</span><span class="p">,</span>
+                <span class="n">previous_part_number</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">reference_map_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">print_agp_line_no_intersection</span><span class="p">(</span>
+                <span class="n">reference_maps_dict</span><span class="p">[</span><span class="n">reference_map_id</span><span class="p">]</span><span class="o">.</span><span class="n">alignments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="kc">None</span><span class="p">,</span>
+                <span class="n">previous_ref_end</span><span class="p">,</span>
+                <span class="n">previously_scaffolded_maps</span><span class="p">,</span>
+                <span class="n">key_dict</span><span class="p">,</span>
+                <span class="n">previous_part_number</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">scaffolded_maps</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">previously_scaffolded_maps</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">scaffolded_maps</span></div>
+
+
+<div class="viewcode-block" id="write_unplaced_contigs"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.write_unplaced_contigs">[docs]</a><span class="k">def</span> <span class="nf">write_unplaced_contigs</span><span class="p">(</span><span class="n">key_dict</span><span class="p">,</span> <span class="n">contigs_sequence_dict</span><span class="p">,</span> <span class="n">scaffolded_maps</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Incorporates contigs that weren&#39;t scaffolded into the AGP file</span>
+<span class="sd">    </span>
+<span class="sd">    :param key_dict: Dict containing the correspondance between contigs and contig maps</span>
+<span class="sd">    :type key_dict: dict((int, int, int), (str, int, int, int))</span>
+<span class="sd">    :param contigs_sequence_dict: Dict containing fasta sequences</span>
+<span class="sd">    :type contigs_sequence_dict: dict(str, str)</span>
+<span class="sd">    :param scaffolded_maps: List containing contig map ids that were scaffolded</span>
+<span class="sd">    :type scaffolded_maps: list(int)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Writing unplaced contigs in agp file&quot;</span><span class="p">)</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Phase_1/phase_1.agp&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">agp</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">contig_map</span><span class="p">,</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">key_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">contig_map</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">scaffolded_maps</span><span class="p">:</span>
+                <span class="n">contig_name</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[(</span><span class="n">contig_map</span><span class="p">,</span> <span class="n">channel</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">contig_start</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[(</span><span class="n">contig_map</span><span class="p">,</span> <span class="n">channel</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">contig_end</span> <span class="o">=</span> <span class="n">key_dict</span><span class="p">[(</span><span class="n">contig_map</span><span class="p">,</span> <span class="n">channel</span><span class="p">)][</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">scaffold_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{key_dict[(contig_map, channel)][0]}</span><span class="s2">_subseq_</span><span class="si">{contig_start}</span><span class="s2">:</span><span class="si">{contig_end}</span><span class="s2">&quot;</span>
+                <span class="n">scaffold_start</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">scaffold_end</span> <span class="o">=</span> <span class="n">contig_end</span> <span class="o">-</span> <span class="n">contig_start</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">orientation</span> <span class="o">=</span> <span class="s2">&quot;+&quot;</span>
+                <span class="n">agp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{scaffold_name}</span><span class="se">\t</span><span class="si">{scaffold_start}</span><span class="se">\t</span><span class="si">{scaffold_end}</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">W</span><span class="se">\t</span><span class="si">{contig_name}</span><span class="se">\t</span><span class="si">{contig_start}</span><span class="se">\t</span><span class="si">{contig_end}</span><span class="se">\t</span><span class="si">{orientation}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">scaffolded_maps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">contig_map</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="solve_alignment_containment"><a class="viewcode-back" href="../../Alignment_methods.html#biscot.Alignment.solve_alignment_containment">[docs]</a><span class="k">def</span> <span class="nf">solve_alignment_containment</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">,</span> <span class="n">contigs_map_dict</span><span class="p">,</span> <span class="n">key_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calls the contained alignment solver function for each alignment couple</span>
+<span class="sd">    </span>
+<span class="sd">    :param contained_alignments: Tuple containing the contained alignment (second position) and the large alignment (first position)</span>
+<span class="sd">    :type reference_maps_dict: dict(int, Map)</span>
+<span class="sd">    :param contigs_map_dict: Dict containing contig maps</span>
+<span class="sd">    :type contigs_map_dict: dict(int, Map)</span>
+<span class="sd">    :param key_dict: Dict containing correspondance between contigs and contig maps</span>
+<span class="sd">    :type key_dict: dict((int, int, int), (str, int, int, int))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="n">Map</span><span class="o">.</span><span class="n">sort_map_alignments</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">)</span>
+        <span class="n">contained_alignments</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">check_map_containment</span><span class="p">(</span><span class="n">reference_maps_dict</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">contained_alignments</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">contained_alignments</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">aln_couple</span> <span class="ow">in</span> <span class="n">contained_alignments</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">solve_containment</span><span class="p">(</span>
+                        <span class="n">aln_couple</span><span class="p">,</span> <span class="n">reference_maps_dict</span><span class="p">,</span> <span class="n">contigs_map_dict</span><span class="p">,</span> <span class="n">key_dict</span>
+                    <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Istace, Caroline Belser, Jean-Marc Aury
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

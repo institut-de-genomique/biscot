@@ -1,0 +1,458 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Alignment methods &mdash; Bionano Scaffolding Correction Tool (BiSCOT) 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Blat module" href="Blat.html" />
+    <link rel="prev" title="Alignment class" href="Alignment_class.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Bionano Scaffolding Correction Tool (BiSCOT)
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="Alignment.html">Alignment module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Alignment_class.html">Alignment class</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Alignment methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Blat.html">Blat module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Key.html">Key file related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Map.html">Map module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Misc.html">General methods</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Bionano Scaffolding Correction Tool (BiSCOT)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="Alignment.html">Alignment module</a> &raquo;</li>
+        
+      <li>Alignment methods</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Alignment_methods.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-biscot.Alignment">
+<span id="alignment-methods"></span><h1>Alignment methods<a class="headerlink" href="#module-biscot.Alignment" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="biscot.Alignment.get_leftmost_label">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">get_leftmost_label</code><span class="sig-paren">(</span><em class="sig-param">label_list</em>, <em class="sig-param">channel</em>, <em class="sig-param">reference_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#get_leftmost_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.get_leftmost_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts all label positions from a label list ids and reference maps and returns the one that has the minimum position on the anchor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label_list</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – List of label ids</p></li>
+<li><p><strong>channel</strong> (<em>int</em><em> (</em><em>1</em><em> or </em><em>2</em><em>)</em>) – Enzyme channel to consider to extract label position</p></li>
+<li><p><strong>reference_map</strong> (<em>dict</em><em>(</em><em>integer: Map</em><em>)</em>) – Dict containing anchor Map objects</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the label id that satisfies label_position = min(all_label_positions)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Alignment.get_rightmost_label">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">get_rightmost_label</code><span class="sig-paren">(</span><em class="sig-param">label_list</em>, <em class="sig-param">channel</em>, <em class="sig-param">reference_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#get_rightmost_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.get_rightmost_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts all label positions from a label list ids and reference maps and returns the one that has the maximum position on the anchor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label_list</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – List of label ids</p></li>
+<li><p><strong>channel</strong> (<em>int</em><em> (</em><em>1</em><em> or </em><em>2</em><em>)</em>) – Enzyme channel to consider to extract label position</p></li>
+<li><p><strong>reference_map</strong> (<em>dict</em><em>(</em><em>int</em><em>, </em><a class="reference internal" href="Map_class.html#biscot.Map.Map" title="biscot.Map.Map"><em>Map</em></a><em>)</em>) – Dict containing anchor Map objects</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the label id that satisfies label_position = max(all_label_positions)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Alignment.get_shared_labels">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">get_shared_labels</code><span class="sig-paren">(</span><em class="sig-param">aln_1</em>, <em class="sig-param">aln_2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#get_shared_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.get_shared_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses two Alignments objects and returns anchor map label ids for which both contig maps are aligned to</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>aln_1</strong> (<a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a>) – An alignment object</p></li>
+<li><p><strong>aln_2</strong> (<a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a>) – An Alignment object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tuple of lists that contains reference label ids which corresponds to the overlap between aln_1 and aln_2. One list for each channel.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple(list(int), list(int))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Alignment.line_to_alignment">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">line_to_alignment</code><span class="sig-paren">(</span><em class="sig-param">line</em>, <em class="sig-param">channel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#line_to_alignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.line_to_alignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an xmap line to an Alignment object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> (<em>str</em>) – A line of an xmap file</p></li>
+<li><p><strong>channel</strong> (<em>int</em>) – Enzyme channel to consider</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An alignment object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment">Alignment</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Alignment.parse_xmap">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">parse_xmap</code><span class="sig-paren">(</span><em class="sig-param">reference_maps_dict</em>, <em class="sig-param">xmap_1_path</em>, <em class="sig-param">xmap_2_path</em>, <em class="sig-param">deleted_xmap_records</em>, <em class="sig-param">xmap_two_enzymes_path=''</em>, <em class="sig-param">only_confirmed_positions=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#parse_xmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.parse_xmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses from one to three xmaps and converts lines to Alignment objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_maps_dict</strong> (<em>dict</em><em>(</em><em>int</em><em>, </em><a class="reference internal" href="Map_class.html#biscot.Map.Map" title="biscot.Map.Map"><em>Map</em></a><em>)</em>) – Dict containing anchor Map obecjts</p></li>
+<li><p><strong>xmap_1_path</strong> (<em>str</em>) – Path to the first xmap_file</p></li>
+<li><p><strong>xmap_2_path</strong> (<em>str</em>) – Path to the second xmap file</p></li>
+<li><p><strong>deleted_xmap_records</strong> (<em>dict</em><em>(</em><em>int</em><em>, </em><a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a><em>)</em>) – Dict containing Alignment objects that were deleted due to a larger alignment being found</p></li>
+<li><p><strong>xmap_two_enzymes_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to the 2-enzyme xmap file, defaults to “”</p></li>
+<li><p><strong>only_confirmed_positions</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, only alignments contained in xmap_1 or xmap_2 AND in xmap_2enzymes will be conserved, defaults to False</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Alignment.print_agp">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">print_agp</code><span class="sig-paren">(</span><em class="sig-param">reference_maps_dict</em>, <em class="sig-param">key_dict</em>, <em class="sig-param">deleted_xmap_records</em>, <em class="sig-param">contigs_map_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#print_agp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.print_agp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches for shared labels between two Alignment objects and calls the correct function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_maps_dict</strong> (<em>dict</em><em>(</em><em>int</em><em>, </em><a class="reference internal" href="Map_class.html#biscot.Map.Map" title="biscot.Map.Map"><em>Map</em></a><em>)</em>) – Dict containing anchor maps</p></li>
+<li><p><strong>key_dict</strong> (<em>dict</em><em>(</em><em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>:</em><em> (</em><em>str</em><em>, </em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>)</em>) – Dict containing the correspondance between contigs and contig maps</p></li>
+<li><p><strong>deleted_xmap_records</strong> (<em>dict</em><em>(</em><em>integer: Alignment</em><em>)</em>) – Dict containing smaller alignments that weren’t retained when parsing xmaps</p></li>
+<li><p><strong>contigs_map_dict</strong> (<em>dict</em><em>(</em><em>int</em><em>, </em><a class="reference internal" href="Map_class.html#biscot.Map.Map" title="biscot.Map.Map"><em>Map</em></a><em>)</em>) – Dict containing contig maps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List containing contig maps that were used to build current scaffold</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list(int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Alignment.print_agp_line_no_intersection">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">print_agp_line_no_intersection</code><span class="sig-paren">(</span><em class="sig-param">aln_1</em>, <em class="sig-param">aln_2</em>, <em class="sig-param">previous_ref_end</em>, <em class="sig-param">previously_scaffolded_maps</em>, <em class="sig-param">key_dict</em>, <em class="sig-param">previous_part_number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#print_agp_line_no_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.print_agp_line_no_intersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints an AGP line, formatted following the AGP2 standard. Used when two contig maps don’t share anchor labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>aln_1</strong> (<a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a>) – Alignment that has the smallest reference_start</p></li>
+<li><p><strong>aln_2</strong> (<a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a>) – Alignment that has the highest reference_start</p></li>
+<li><p><strong>previous_ref_end</strong> (<em>int</em>) – Current position in the scaffold being built</p></li>
+<li><p><strong>previously_scaffolded_maps</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – Contig map ids that were previously used to build the current scaffold</p></li>
+<li><p><strong>key_dict</strong> (<em>dict</em><em>(</em><em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>(</em><em>str</em><em>, </em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>)</em>) – Dict containing the correspondance between contigs and contig maps</p></li>
+<li><p><strong>previous_part_number</strong> (<em>int</em>) – Current AGP line id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Current position in the scaffold being build after applying the changes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Alignment.print_agp_line_with_intersection">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">print_agp_line_with_intersection</code><span class="sig-paren">(</span><em class="sig-param">aln_1</em>, <em class="sig-param">aln_2</em>, <em class="sig-param">previous_ref_end</em>, <em class="sig-param">previously_scaffolded_maps</em>, <em class="sig-param">contigs_map_dict</em>, <em class="sig-param">previous_part_number</em>, <em class="sig-param">key_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#print_agp_line_with_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.print_agp_line_with_intersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a line formatted by following the AGP2 standard. Used when two contig maps share labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>aln_1</strong> (<a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a>) – Alignment that has the smallest reference_start</p></li>
+<li><p><strong>aln_2</strong> (<a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a>) – Alignment that has the highest reference_start</p></li>
+<li><p><strong>previous_ref_end</strong> (<em>int</em>) – Current position in the scaffold that is being built</p></li>
+<li><p><strong>previously_scaffolded_maps</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – Contig map ids that were previously used to build the current scaffold</p></li>
+<li><p><strong>contigs_map_dict</strong> (<em>dict</em><em>(</em><em>int</em><em>, </em><a class="reference internal" href="Map_class.html#biscot.Map.Map" title="biscot.Map.Map"><em>Map</em></a><em>)</em>) – Dict containing contig maps</p></li>
+<li><p><strong>previous_part_number</strong> (<em>int</em>) – Id of the previous line</p></li>
+<li><p><strong>key_dict</strong> (<em>dict</em><em>(</em><em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>(</em><em>str</em><em>, </em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>)</em>) – Dict containing the correspondance between contigs and contig maps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Current position in the scaffold after applying the changes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Alignment.print_gap_line">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">print_gap_line</code><span class="sig-paren">(</span><em class="sig-param">aln_1</em>, <em class="sig-param">aln_2</em>, <em class="sig-param">reference_id</em>, <em class="sig-param">previous_reference_end</em>, <em class="sig-param">previous_part_number</em>, <em class="sig-param">key_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#print_gap_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.print_gap_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints an AGP line, formatted following the AGP2 standard. Used to print an ‘N’ line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>aln_1</strong> (<a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a>) – Alignment that has the smallest reference_start</p></li>
+<li><p><strong>aln_2</strong> (<a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a>) – Alignment that has the highest reference_start</p></li>
+<li><p><strong>reference_id</strong> (<em>int</em>) – Id of the anchor map</p></li>
+<li><p><strong>previous_reference_end</strong> (<em>int</em>) – Current position in the scaffold being built</p></li>
+<li><p><strong>previous_part_number</strong> (<em>int</em>) – Current AGP line id</p></li>
+<li><p><strong>key_dict</strong> (<em>dict</em><em>(</em><em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>(</em><em>str</em><em>, </em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>)</em>) – Dict containing the correspondance between contigs and contig maps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Current position in the scaffold being built after applying changes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Alignment.solve_alignment_containment">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">solve_alignment_containment</code><span class="sig-paren">(</span><em class="sig-param">reference_maps_dict</em>, <em class="sig-param">contigs_map_dict</em>, <em class="sig-param">key_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#solve_alignment_containment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.solve_alignment_containment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the contained alignment solver function for each alignment couple</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>contained_alignments</strong> – Tuple containing the contained alignment (second position) and the large alignment (first position)</p></li>
+<li><p><strong>contigs_map_dict</strong> (<em>dict</em><em>(</em><em>int</em><em>, </em><a class="reference internal" href="Map_class.html#biscot.Map.Map" title="biscot.Map.Map"><em>Map</em></a><em>)</em>) – Dict containing contig maps</p></li>
+<li><p><strong>key_dict</strong> (<em>dict</em><em>(</em><em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>(</em><em>str</em><em>, </em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>)</em>) – Dict containing correspondance between contigs and contig maps</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Alignment.solve_containment">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">solve_containment</code><span class="sig-paren">(</span><em class="sig-param">aln_couple</em>, <em class="sig-param">reference_maps_dict</em>, <em class="sig-param">contig_maps_dict</em>, <em class="sig-param">key_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#solve_containment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.solve_containment" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Tries to integrate a small map into a larger one.</div>
+<div class="line">Let’s consider a Map 1 that is aligned on the reference from position 1 to 100 and a Map 2 that is aligned on the reference from position 25 to 75.</div>
+<div class="line">The goal of this function is to break alignment of Map 1 into two alignments (1-25 and 75-100).</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>aln_couple</strong> (<em>tuple</em><em>(</em><a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a><em>, </em><a class="reference internal" href="Alignment_class.html#biscot.Alignment.Alignment" title="biscot.Alignment.Alignment"><em>Alignment</em></a><em>)</em>) – Two Alignment objects. The first one being the ‘small alignment’ and the second, the ‘large alignment’</p></li>
+<li><p><strong>reference_maps_dict</strong> (<em>dict</em><em>(</em><em>int</em><em>, </em><a class="reference internal" href="Map_class.html#biscot.Map.Map" title="biscot.Map.Map"><em>Map</em></a><em>)</em>) – Dict of anchor Map objects</p></li>
+<li><p><strong>contig_maps_dict</strong> (<em>dict</em><em>(</em><em>int</em><em>, </em><a class="reference internal" href="Map_class.html#biscot.Map.Map" title="biscot.Map.Map"><em>Map</em></a><em>)</em>) – Dict of contig Map objects</p></li>
+<li><p><strong>key_dict</strong> (<em>dict</em><em>(</em><em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>(</em><em>str</em><em>, </em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>)</em>) – Dict containing the correspondance between Map objects and actual sequences</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="biscot.Alignment.write_unplaced_contigs">
+<code class="sig-prename descclassname">biscot.Alignment.</code><code class="sig-name descname">write_unplaced_contigs</code><span class="sig-paren">(</span><em class="sig-param">key_dict</em>, <em class="sig-param">contigs_sequence_dict</em>, <em class="sig-param">scaffolded_maps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biscot/Alignment.html#write_unplaced_contigs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biscot.Alignment.write_unplaced_contigs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Incorporates contigs that weren’t scaffolded into the AGP file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_dict</strong> (<em>dict</em><em>(</em><em>(</em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>, </em><em>(</em><em>str</em><em>, </em><em>int</em><em>, </em><em>int</em><em>, </em><em>int</em><em>)</em><em>)</em>) – Dict containing the correspondance between contigs and contig maps</p></li>
+<li><p><strong>contigs_sequence_dict</strong> (<em>dict</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em>) – Dict containing fasta sequences</p></li>
+<li><p><strong>scaffolded_maps</strong> (<em>list</em><em>(</em><em>int</em><em>)</em>) – List containing contig map ids that were scaffolded</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Blat.html" class="btn btn-neutral float-right" title="Blat module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Alignment_class.html" class="btn btn-neutral float-left" title="Alignment class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Istace, Caroline Belser, Jean-Marc Aury
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

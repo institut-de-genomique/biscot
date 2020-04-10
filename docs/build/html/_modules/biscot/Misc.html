@@ -1,0 +1,342 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>biscot.Misc &mdash; Bionano Scaffolding Correction Tool (BiSCOT) 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Bionano Scaffolding Correction Tool (BiSCOT)
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Alignment.html">Alignment module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Blat.html">Blat module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Key.html">Key file related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Map.html">Map module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Misc.html">General methods</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Bionano Scaffolding Correction Tool (BiSCOT)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>biscot.Misc</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for biscot.Misc</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">SeqIO</span>
+<span class="kn">from</span> <span class="nn">Bio.Alphabet</span> <span class="kn">import</span> <span class="n">generic_dna</span>
+<span class="kn">from</span> <span class="nn">Bio.Seq</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqRecord</span> <span class="kn">import</span> <span class="n">SeqRecord</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">coloredlogs</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<span class="n">_orig_print</span> <span class="o">=</span> <span class="nb">print</span>
+
+
+<div class="viewcode-block" id="print"><a class="viewcode-back" href="../../Misc.html#biscot.Misc.print">[docs]</a><span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Unbuffured print function&quot;&quot;&quot;</span>
+
+    <span class="n">_orig_print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_path"><a class="viewcode-back" href="../../Misc.html#biscot.Misc.check_path">[docs]</a><span class="k">def</span> <span class="nf">check_path</span><span class="p">(</span><span class="n">file_paths</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if the files given as input exist</span>
+<span class="sd">    </span>
+<span class="sd">    :param file_paths: List of file paths</span>
+<span class="sd">    :type file_paths: list(str)</span>
+<span class="sd">    :raises FileNotFoundError: If a file is not found</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">file_paths</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> file not found.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="setup_logging"><a class="viewcode-back" href="../../Misc.html#biscot.Misc.setup_logging">[docs]</a><span class="k">def</span> <span class="nf">setup_logging</span><span class="p">(</span><span class="n">debug</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Setups the logging streams</span>
+<span class="sd">    </span>
+<span class="sd">    :param debug: True to activate debug logs</span>
+<span class="sd">    :type debug: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">coloredlogs</span><span class="o">.</span><span class="n">DEFAULT_FIELD_STYLES</span><span class="p">[</span><span class="s2">&quot;asctime&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="s2">&quot;bright&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+    <span class="n">coloredlogs</span><span class="o">.</span><span class="n">DEFAULT_FIELD_STYLES</span><span class="p">[</span><span class="s2">&quot;filename&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;bright&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+    <span class="n">coloredlogs</span><span class="o">.</span><span class="n">DEFAULT_FIELD_STYLES</span><span class="p">[</span><span class="s2">&quot;lineno&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;bright&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+    <span class="n">coloredlogs</span><span class="o">.</span><span class="n">DEFAULT_FIELD_STYLES</span><span class="p">[</span><span class="s2">&quot;levelname&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;bold&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+    <span class="n">coloredlogs</span><span class="o">.</span><span class="n">DEFAULT_LEVEL_STYLES</span><span class="p">[</span><span class="s2">&quot;INFO&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;bright&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+    <span class="n">coloredlogs</span><span class="o">.</span><span class="n">DEFAULT_LEVEL_STYLES</span><span class="p">[</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;magenta&quot;</span><span class="p">,</span> <span class="s2">&quot;bright&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+    <span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2">]</span><span class="se">\t</span><span class="s2">[</span><span class="si">%(filename)9.9s</span><span class="s2"> - </span><span class="si">%(lineno)03d</span><span class="s2">]</span><span class="se">\t</span><span class="s2">[</span><span class="si">%(levelname)5.5s</span><span class="s2">]</span><span class="se">\t</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;biscot.log&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;DEBUG&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2">]</span><span class="se">\t</span><span class="s2">[</span><span class="si">%(filename)9.9s</span><span class="s2"> - </span><span class="si">%(lineno)03d</span><span class="s2">]</span><span class="se">\t</span><span class="s2">[</span><span class="si">%(levelname)5.5s</span><span class="s2">]</span><span class="se">\t</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;biscot.log&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;INFO&quot;</span>
+
+    <span class="n">log_formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+        <span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2">]</span><span class="se">\t</span><span class="s2">[</span><span class="si">%(filename)9.9s</span><span class="s2"> - </span><span class="si">%(lineno)03d</span><span class="s2">]</span><span class="se">\t</span><span class="s2">[</span><span class="si">%(levelname)5.5s</span><span class="s2">]</span><span class="se">\t</span><span class="si">%(message)s</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="n">root_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+    <span class="n">console_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+    <span class="n">console_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">log_formatter</span><span class="p">)</span>
+    <span class="n">root_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console_handler</span><span class="p">)</span>
+
+    <span class="n">coloredlogs</span><span class="o">.</span><span class="n">install</span><span class="p">(</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span>
+        <span class="n">logger</span><span class="o">=</span><span class="n">root_logger</span><span class="p">,</span>
+        <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2">]</span><span class="se">\t</span><span class="s2">[</span><span class="si">%(filename)9.9s</span><span class="s2"> - </span><span class="si">%(lineno)03d</span><span class="s2">]</span><span class="se">\t</span><span class="s2">[</span><span class="si">%(levelname)5.5s</span><span class="s2">]</span><span class="se">\t</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_contigs"><a class="viewcode-back" href="../../Misc.html#biscot.Misc.load_contigs">[docs]</a><span class="k">def</span> <span class="nf">load_contigs</span><span class="p">(</span><span class="n">contigs_sequence_dict</span><span class="p">,</span> <span class="n">contigs_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts contig sequences from a FASTA file</span>
+<span class="sd">    </span>
+<span class="sd">    :param contigs_sequence_dict: Dict that will contain contigs FASTA sequence</span>
+<span class="sd">    :type contigs_sequence_dict: dict(str: str)</span>
+<span class="sd">    :param contigs_path: Path to a contigs FASTA file</span>
+<span class="sd">    :type contigs_path: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading contigs fasta file&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">contigs_path</span><span class="p">),</span> <span class="s2">&quot;fasta&quot;</span><span class="p">):</span>
+        <span class="n">contigs_sequence_dict</span><span class="p">[</span><span class="n">record</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="agp_to_fasta"><a class="viewcode-back" href="../../Misc.html#biscot.Misc.agp_to_fasta">[docs]</a><span class="k">def</span> <span class="nf">agp_to_fasta</span><span class="p">(</span><span class="n">contigs_sequence_dict</span><span class="p">,</span> <span class="n">agp_path</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses an AGP file and thanks to a dict containing contigs sequence, transforms it into a scaffolds FASTA File</span>
+<span class="sd">    </span>
+<span class="sd">    :param contigs_sequence_dict: Dict containing contigs FASTA sequence</span>
+<span class="sd">    :type contigs_sequence_dict: dict(str: str)</span>
+<span class="sd">    :param agp_path: Path to an AGP file</span>
+<span class="sd">    :type agp_path: str</span>
+<span class="sd">    :param output_file: Path to an output FASTA file</span>
+<span class="sd">    :type output_file: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Converting agp file to fasta&quot;</span><span class="p">)</span>
+    <span class="n">scaffolds_sequence_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">agp_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">agp</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">agp</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">seq_type</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">seq_type</span> <span class="o">==</span> <span class="s2">&quot;W&quot;</span><span class="p">:</span>
+                <span class="n">scaffold_name</span><span class="p">,</span> <span class="n">contig_name</span><span class="p">,</span> <span class="n">contig_start</span><span class="p">,</span> <span class="n">contig_end</span><span class="p">,</span> <span class="n">orientation</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">line</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">]),</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">7</span><span class="p">]),</span>
+                    <span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+                    <span class="n">scaffolds_sequence_dict</span><span class="p">[</span><span class="n">scaffold_name</span><span class="p">]</span> <span class="o">+=</span> <span class="n">contigs_sequence_dict</span><span class="p">[</span>
+                        <span class="n">contig_name</span>
+                    <span class="p">][</span><span class="n">contig_start</span><span class="p">:</span><span class="n">contig_end</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">scaffolds_sequence_dict</span><span class="p">[</span><span class="n">scaffold_name</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span>
+                        <span class="n">Seq</span><span class="p">(</span>
+                            <span class="n">contigs_sequence_dict</span><span class="p">[</span><span class="n">contig_name</span><span class="p">][</span><span class="n">contig_start</span><span class="p">:</span><span class="n">contig_end</span><span class="p">],</span>
+                            <span class="n">generic_dna</span><span class="p">,</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">()</span>
+                    <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">seq_type</span> <span class="o">==</span> <span class="s2">&quot;N&quot;</span><span class="p">:</span>
+                <span class="n">scaffold_name</span><span class="p">,</span> <span class="n">gap_size</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+                <span class="n">scaffolds_sequence_dict</span><span class="p">[</span><span class="n">scaffold_name</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot;N&quot;</span> <span class="o">*</span> <span class="n">gap_size</span>
+
+    <span class="n">sorted_scaffolds</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="n">scaffolds_sequence_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">scaffold</span><span class="p">,</span> <span class="n">sequence</span> <span class="ow">in</span> <span class="n">sorted_scaffolds</span><span class="p">:</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="n">SeqRecord</span><span class="p">(</span><span class="n">Seq</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">generic_dna</span><span class="p">),</span> <span class="nb">id</span><span class="o">=</span><span class="n">scaffold</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;fasta&quot;</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Benjamin Istace, Caroline Belser, Jean-Marc Aury
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
