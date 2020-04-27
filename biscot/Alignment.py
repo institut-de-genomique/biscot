@@ -1,5 +1,5 @@
-import Key
-import Map
+from biscot import Key
+from biscot import Map
 
 from collections import defaultdict
 import copy

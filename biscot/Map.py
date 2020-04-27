@@ -1,4 +1,4 @@
-import Misc
+from biscot import Misc
 
 import copy
 import logging

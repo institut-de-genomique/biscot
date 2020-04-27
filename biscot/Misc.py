@@ -30,7 +30,7 @@ def check_path(file_paths):
 
     for file_path in file_paths:
         if not os.path.exists(file_path):
-            raise FileNotFoundError("%s file not found.")
+            raise FileNotFoundError(f"{file_path} file not found.")
 
 
 def setup_logging(debug):

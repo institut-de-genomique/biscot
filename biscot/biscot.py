@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-import Alignment
-import Blat
-import Key
-import Map
-import Misc
+from biscot import Alignment
+from biscot import Blat
+from biscot import Key
+from biscot import Map
+from biscot import Misc
 
 import argparse
 import logging
@@ -11,7 +11,7 @@ import os
 import sys
 
 
-if __name__ == "__main__":
+def run():
     Misc.print("")
 
     parser = argparse.ArgumentParser(
