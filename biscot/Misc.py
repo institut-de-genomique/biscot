@@ -146,5 +146,5 @@ def agp_to_fasta(contigs_sequence_dict, agp_path, output_file):
     )
     with open(output_file, "w") as out:
         for scaffold, sequence in sorted_scaffolds:
-            record = SeqRecord(Seq(sequence, generic_dna), id=scaffold)
+            record = SeqRecord(Seq(sequence, generic_dna), id=scaffold, description='')
             out.write(record.format("fasta"))
