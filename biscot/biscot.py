@@ -196,7 +196,7 @@ def run():
 
     logging.info("Trying to integrate contained maps")
     Alignment.solve_alignment_containment(
-        reference_maps_dict, contigs_map_dict, extended_key_dict,
+        reference_maps_dict, contigs_map_dict, extended_key_dict
     )
 
     try:

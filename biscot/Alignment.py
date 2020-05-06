@@ -886,6 +886,8 @@ def print_agp(
         aln_1, aln_2 = None, None
 
         for i in range(0, len(reference_maps_dict[reference_map_id].alignments) - 1):
+            intersection = None
+            aln_1, aln_2 = None, None
             aln_1 = reference_maps_dict[reference_map_id].alignments[i]
             aln_2 = reference_maps_dict[reference_map_id].alignments[i + 1]
 
@@ -919,7 +921,7 @@ def print_agp(
                     else:
                         aln_2 = deleted_xmap_records[aln_2.map_id]
 
-            if same_channel_alignments_found:
+            if same_channel_alignments_found and aln_1.reference_end > aln_2.reference_start:
                 (
                     previous_ref_end,
                     intersection,
