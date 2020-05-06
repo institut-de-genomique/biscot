@@ -8,7 +8,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 setup(
     name="biscot",
     packages=["biscot"],
-    version="2.1",
+    version="2.2",
     entry_points={
         "console_scripts": [
             "biscot = biscot.biscot:run",
@@ -21,7 +21,7 @@ setup(
     author="Benjamin Istace, Caroline Belser, Jean-Marc Aury",
     author_email="bistace@genoscope.cns.fr",
     url="https://github.com/institut-de-genomique/biscot",
-    download_url="https://github.com/institut-de-genomique/biscot/archive/v2.1.tar.gz",
+    download_url="https://github.com/institut-de-genomique/biscot/archive/v2.2.tar.gz",
     keywords=["Genome", "Scaffolding", "Bionano",],
     install_requires=["argparse", "biopython", "coloredlogs",],
     classifiers=[
