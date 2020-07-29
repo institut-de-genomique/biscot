@@ -3,8 +3,6 @@ BiSCoT is a tool that aims to improve the contiguity of scaffolds and contigs ge
 
 Biorxiv preprint : [link](https://www.biorxiv.org/content/10.1101/674721v1 "BiSCoT Biorxiv preprint")
 
-For additional documentation and test cases, please have a look at the [wiki](https://github.com/institut-de-genomique/biscot/wiki "Wiki link").
-
 In case of troubles when using or installing the software, please open up an issue by clicking [here](https://github.com/institut-de-genomique/biscot/issues/new "Github issue page").
 
 ## Installation
