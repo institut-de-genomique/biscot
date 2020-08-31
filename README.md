@@ -32,7 +32,7 @@ A typical execution of BiSCoT should look like this :
 # Execute BiSCoT
 biscot.py --cmap-ref cmap_reference.cmap \\
     --cmap-1 cmap_dle.cmap \\
-    --cmap-2 cmap_bspq1.cmap \\
+    --cmap-2 cmap_bspqi.cmap \\
     --xmap-1 xmap_dle.xmap \\
     --xmap-2 xmap_bspqi.xmap \\
     --key key.txt \\
