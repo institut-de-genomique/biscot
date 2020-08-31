@@ -10,7 +10,7 @@ In case of troubles when using or installing the software, please open up an iss
 BiSCoT comes in the form of a Python3 script with some Python and software dependencies. In order to run it correctly, you will need :
 - Python 3 (tested with Python 3.6)
 - the Biopython and Argparse python modules (both installed automatically with BiSCoT)
-- the BLAT aligner if you plan on using the aggressive scaffolding mode that is based on shared labels and sequence similarity (BiSCoT was tested with the [v36](https://hgwdev.gi.ucsc.edu/~kent/src/blatSrc36.zip "BLAT v36") version of BLAT)
+- the BLAT aligner if you plan on using the aggressive scaffolding mode that is based on shared labels and sequence similarity (BiSCoT was tested with the [v36](https://genome-test.gi.ucsc.edu/~kent/exe/linux/blatSuite.36.zip "BLAT v36") version of BLAT)
 
 BiSCoT is available on [PyPI](https://pypi.org/ "PyPI") and can be installed with the following command:
 ```
