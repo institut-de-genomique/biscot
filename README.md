@@ -29,9 +29,6 @@ BiSCoT was designed to improve a prior Bionano scaffolding so it needs a few fil
 
 A typical execution of BiSCoT should look like this :
 ```
-# If the previous command returned an error, modify your $PATH to include the blat directory
-export PATH=Path/To/Blat:$PATH
-
 # Execute BiSCoT
 biscot.py --cmap-ref cmap_reference.cmap \\
     --cmap-1 cmap_dle.cmap \\
