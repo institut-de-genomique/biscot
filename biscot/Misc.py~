@@ -1,4 +1,5 @@
 from Bio import SeqIO
+from Bio.Alphabet import generic_dna
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from collections import defaultdict
@@ -132,6 +133,7 @@ def agp_to_fasta(contigs_sequence_dict, agp_path, output_file):
                     scaffolds_sequence_dict[scaffold_name] += str(
                         Seq(
                             contigs_sequence_dict[contig_name][contig_start:contig_end],
+                            generic_dna,
                         ).reverse_complement()
                     )
 
@@ -144,5 +146,5 @@ def agp_to_fasta(contigs_sequence_dict, agp_path, output_file):
     )
     with open(output_file, "w") as out:
         for scaffold, sequence in sorted_scaffolds:
-            record = SeqRecord(Seq(sequence), id=scaffold, description='')
+            record = SeqRecord(Seq(sequence, generic_dna), id=scaffold, description='')
             out.write(record.format("fasta"))

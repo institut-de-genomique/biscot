@@ -47,6 +47,7 @@ def run_blat(
                 SeqRecord(
                     Seq(
                         contigs_sequence_dict[contig_1][contig_1_start:contig_1_end],
+                        generic_dna,
                     ),
                     id=contig_1,
                     description="",
@@ -57,6 +58,7 @@ def run_blat(
                 SeqRecord(
                     Seq(
                         contigs_sequence_dict[contig_1][contig_1_start:contig_1_end],
+                        generic_dna,
                     ),
                     id=contig_1,
                     description="",
@@ -71,6 +73,7 @@ def run_blat(
                 SeqRecord(
                     Seq(
                         contigs_sequence_dict[contig_2][contig_2_start:contig_2_end],
+                        generic_dna,
                     ),
                     id=contig_2,
                     description="",
@@ -81,6 +84,7 @@ def run_blat(
                 SeqRecord(
                     Seq(
                         contigs_sequence_dict[contig_2][contig_2_start:contig_2_end],
+                        generic_dna,
                     ),
                     id=contig_2,
                     description="",
