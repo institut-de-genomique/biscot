@@ -358,6 +358,8 @@ def solve_containment(aln_couple, reference_maps_dict, contig_maps_dict, key_dic
     |  Tries to integrate a small map into a larger one.
     |  Let's consider a Map 1 that is aligned on the reference from position 1 to 100 and a Map 2 that is aligned on the reference from position 25 to 75.
     |  The goal of this function is to break alignment of Map 1 into two alignments (1-25 and 75-100).
+    |  Returns the large map id if it could be broken, short map id otherwise and 0 or 1 depending id it generated an error to not be
+    |  infinite-looping of the map
     
     :param aln_couple: Two Alignment objects. The first one being the 'small alignment' and the second, the 'large alignment'
     :type aln_couple: tuple(Alignment, Alignment)
@@ -371,6 +373,8 @@ def solve_containment(aln_couple, reference_maps_dict, contig_maps_dict, key_dic
 
     large_aln = aln_couple[0]
     short_aln = aln_couple[1]
+
+    broken_map = None
 
     if (short_aln.reference_start - 10000 < large_aln.reference_start) or (
         short_aln.reference_end + 10000 > large_aln.reference_end
@@ -559,6 +563,78 @@ def solve_containment(aln_couple, reference_maps_dict, contig_maps_dict, key_dic
                 new_map_size = new_map_end - new_map_start
                 old_map_size = old_map_end - old_map_start
 
+                new_aln = Alignment(
+                    new_id,
+                    large_aln.reference_id,
+                    new_aln_start,
+                    new_aln_end,
+                    copy.deepcopy(short_aln.reference_end),
+                    copy.deepcopy(large_aln.reference_end),
+                    large_aln.channel,
+                    large_aln.orientation,
+                    large_aln.alignment,
+                )
+
+                try:
+                    contig_maps_dict[new_id] = Map.Map(
+                        new_id,
+                        contig_maps_dict[large_aln.map_id].labels_1,
+                        contig_maps_dict[large_aln.map_id].labels_2,
+                    )
+                    new_aln.update_alignments(contig_maps_dict)
+                except Exception as e:
+                    logging.debug(e)
+                    contig_maps_dict.pop(new_id)
+                    for i in range(
+                        0, len(reference_maps_dict[short_aln.reference_id].alignments)
+                    ):
+                        if (
+                            reference_maps_dict[short_aln.reference_id].alignments[i]
+                            == short_aln
+                        ):
+                            reference_maps_dict[short_aln.reference_id].alignments.pop(
+                                i
+                            )
+                            break
+                    return (short_aln.map_id, 1)
+
+                previous_reference_end = large_aln.reference_end
+                previous_map_start = large_aln.map_start
+                previous_map_end = large_aln.map_end
+
+                if label_1_start and label_1_end:
+                    large_aln.reference_end = label_1_start[1]
+                elif label_2_start and label_2_end:
+                    large_aln.reference_end = label_2_start[1]
+
+                if large_aln.orientation == "+":
+                    large_aln.map_end = contig_map_label_start_containment
+                else:
+                    large_aln.map_end = 1
+                    large_aln.map_start -= contig_map_label_start_containment
+
+                try:
+                    large_aln.update_alignments(contig_maps_dict)
+                except Exception as e:
+                    logging.debug(e)
+                    logging.debug("Reversing changes")
+                    large_aln.reference_end = previous_reference_end
+                    large_aln.map_start = previous_map_start
+                    large_aln.map_end = previous_map_end
+                    contig_maps_dict.pop(new_id)
+                    for i in range(
+                        0, len(reference_maps_dict[short_aln.reference_id].alignments)
+                    ):
+                        if (
+                            reference_maps_dict[short_aln.reference_id].alignments[i]
+                            == short_aln
+                        ):
+                            reference_maps_dict[short_aln.reference_id].alignments.pop(
+                                i
+                            )
+                            break
+                    return(short_aln.map_id, 1)
+
                 key_dict[(new_id, large_aln.channel, large_aln.reference_id)] = (
                     key_dict[
                         (large_aln.map_id, large_aln.channel, large_aln.reference_id)
@@ -578,38 +654,8 @@ def solve_containment(aln_couple, reference_maps_dict, contig_maps_dict, key_dic
                     old_map_size,
                 )
 
-                contig_maps_dict[new_id] = Map.Map(
-                    new_id,
-                    contig_maps_dict[large_aln.map_id].labels_1,
-                    contig_maps_dict[large_aln.map_id].labels_2,
-                )
-
-                new_aln = Alignment(
-                    new_id,
-                    large_aln.reference_id,
-                    new_aln_start,
-                    new_aln_end,
-                    copy.deepcopy(short_aln.reference_end),
-                    copy.deepcopy(large_aln.reference_end),
-                    large_aln.channel,
-                    large_aln.orientation,
-                    large_aln.alignment,
-                )
                 reference_maps_dict[large_aln.reference_id].add_alignment(new_aln)
-                new_aln.update_alignments(contig_maps_dict)
-
-                if label_1_start and label_1_end:
-                    large_aln.reference_end = label_1_start[1]
-                elif label_2_start and label_2_end:
-                    large_aln.reference_end = label_2_start[1]
-
-                if large_aln.orientation == "+":
-                    large_aln.map_end = contig_map_label_start_containment
-                else:
-                    large_aln.map_end = 1
-                    large_aln.map_start -= contig_map_label_start_containment
-                large_aln.update_alignments(contig_maps_dict)
-
+                    
                 logging.debug(
                     f"Map {large_aln.map_id} after change: {large_aln.reference_start} -> {large_aln.reference_end}"
                 )
@@ -619,6 +665,10 @@ def solve_containment(aln_couple, reference_maps_dict, contig_maps_dict, key_dic
                 logging.debug(
                     f"Map {new_aln.map_id}: {new_aln.reference_start} -> {new_aln.reference_end}"
                 )
+                
+                broken_map = large_aln.map_id
+
+    return (broken_map, 0)
 
 
 def print_agp_line_with_intersection(
@@ -1012,16 +1062,38 @@ def solve_alignment_containment(reference_maps_dict, contigs_map_dict, key_dict)
     :type key_dict: dict((int, int, int), (str, int, int, int))
     """
 
-    for i in range(0, 4):
+    containment_solving_counter = 1
+    erroneous_maps = set()
+
+    while True:
         Map.sort_map_alignments(reference_maps_dict)
         contained_alignments = Map.check_map_containment(reference_maps_dict)
-
+        broken_maps = set()
+        logging.info(f"Containment solver round {containment_solving_counter}")
+        
         if contained_alignments:
             for i in range(0, len(contained_alignments)):
                 for aln_couple in contained_alignments[i]:
-                    solve_containment(
-                        aln_couple, reference_maps_dict, contigs_map_dict, key_dict
-                    )
-
+                    if aln_couple[0].map_id not in broken_maps and aln_couple[1].map_id not in erroneous_maps:
+                        broken_map, is_erroneous = solve_containment(
+                                aln_couple, reference_maps_dict, contigs_map_dict, key_dict
+                        )
+                        if is_erroneous == 1:
+                            erroneous_maps.add(broken_map)
+                        else:
+                            broken_maps.add(broken_map)
         else:
             break
+
+        # Check if there are only erroneous maps left to be able to exit the loop
+        erroneous_maps_counter = 0
+        for i in range(0, len(contained_alignments)):
+            for aln_couple in contained_alignments[i]:
+                if aln_couple[1].map_id in erroneous_maps:
+                    erroneous_maps_counter += 1
+        
+        if erroneous_maps_counter == len(contained_alignments):
+            break
+                    
+
+        containment_solving_counter += 1
