@@ -1050,11 +1050,25 @@ def write_unplaced_contigs(key_dict, contigs_sequence_dict, scaffolded_maps):
                 scaffolded_maps.append(contig_map)
 
 
+def compare_contained_alignments_lists(l1, l2):
+    """
+    Verifies is all elements of l1 are present in l2
+
+    :param l1: List containing Alignment objects
+    :type l1: List
+    :param l2: List containing Alignment objects
+    :type l2: List
+    """
+
+    tmp = len([elt for elt in l2 if elt in l1])
+    return tmp == len(l1)
+
+
 def solve_alignment_containment(reference_maps_dict, contigs_map_dict, key_dict):
     """
     Calls the contained alignment solver function for each alignment couple
-    
-    :param contained_alignments: Tuple containing the contained alignment (second position) and the large alignment (first position)
+
+    :param reference_maps_dict: Dict containing reference map objects    
     :type reference_maps_dict: dict(int, Map)
     :param contigs_map_dict: Dict containing contig maps
     :type contigs_map_dict: dict(int, Map)
@@ -1063,6 +1077,7 @@ def solve_alignment_containment(reference_maps_dict, contigs_map_dict, key_dict)
     """
 
     containment_solving_counter = 1
+    contained_alignments_save = []
     erroneous_maps = set()
 
     while True:
@@ -1094,6 +1109,16 @@ def solve_alignment_containment(reference_maps_dict, contigs_map_dict, key_dict)
         
         if erroneous_maps_counter == len(contained_alignments):
             break
-                    
+        
+        # The list of contained alignments has not changed since last time, we are in an infinite loop
+        if compare_contained_alignments_lists(contained_alignments, contained_alignments_save):
+            for i in range(0, len(contained_alignments)):
+                for aln_couple in contained_alignments[i]:
+                    logging.debug(
+                        f"Map {aln_couple[1].map_id} is contained in map {aln_couple[0].map_id} (Anchor {aln_couple[1].reference_id}) but the containment can't be solved, removing alignment of map {aln_couple[1].map_id}"
+                    )
+                    reference_maps_dict[aln_couple[1].reference_id].alignments = [elt for elt in reference_maps_dict[aln_couple[1].reference_id].alignments if elt.map_id != aln_couple[0].map_id]
+            break
 
+        contained_alignments_save = [elt for elt in contained_alignments]
         containment_solving_counter += 1
